@@ -1,0 +1,23 @@
+---
+layout: default
+description: "변형호의 블로그입니다."
+---
+
+<div class="post-container">
+    <center>
+        <span class="date">
+            {{ page.date | date_to_string }} 
+            {% if page.category %} 
+                in <i>{{ page.categories }}</i>
+            {% endif %} 
+        </span>
+        <h1 class="post-title">{{ page.title }}</h1>
+    </center>
+    <div class="ui divider"></div>
+    {{ content }}
+    <div class="ui horizontal divider">
+        
+    </div>
+    {% include author.html %}
+    {% include disqus.html %}
+</div>

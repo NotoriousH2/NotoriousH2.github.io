@@ -7,3 +7,10 @@ paginate: 15
 baseurl: /
 plugins: [jekyll-gist]
 permalink: /:year/:month/:title.html
+# Analytics
+analytics:
+  provider               : "google-gtag" 
+                          # false (default), "google", "google-universal", "google-gtag", "custom"
+  google:
+    tracking_id          : "G-Z32GEQ5MEH"
+    anonymize_ip         : # true, false (default)

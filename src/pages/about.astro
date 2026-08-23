@@ -1,7 +1,7 @@
 ---
 import { CONTACT, SITE } from '../consts';
 import { CORPORATE, LECTURES } from '../data/lectures';
-import { TALK_CHANNEL, TALKS } from '../data/talks';
+import { TALKS, TALKS_BY_DATE } from '../data/talks';
 import { CATEGORIES } from '../data/taxonomy';
 import { TOOLS } from '../data/tools';
 import Base from '../layouts/Base.astro';
@@ -47,8 +47,8 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
       사용자 행동 데이터로 소셜 링크 추론과 스팸 탐지를 연구했습니다.
     </p>
     <p>
-      짧은 리뷰는 유튜브와 링크드인에, 길게 남길 것은 이 블로그에 씁니다. 강의와 자문
-      문의는 아래 메일로 주세요.
+      짧은 리뷰는 링크드인에, 길게 남길 것은 이 블로그에 씁니다. 강의와 자문 문의는
+      아래 메일로 주세요.
     </p>
   </section>
 
@@ -194,14 +194,11 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
     TALKS.length > 0 && (
       <section class="block">
         <div class="section-head">
-          <h2>발표 · 영상</h2>
+          <h2>출연과 공개 자료</h2>
           <span class="meter meter--faint">{TALKS.length}건</span>
         </div>
-        <p class="note">
-          <a href={TALK_CHANNEL.href}>{TALK_CHANNEL.label}</a> — {TALK_CHANNEL.blurb}
-        </p>
         <dl class="specs">
-          {TALKS.map((talk) => (
+          {TALKS_BY_DATE.map((talk) => (
             <div class="spec" style={`--tag-color: var(--cat-${talk.category})`}>
               <dt class="meter dot">
                 {talk.date}

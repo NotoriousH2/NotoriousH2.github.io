@@ -12,7 +12,6 @@ export const SITE = {
 
 /** 헤더·푸터에 나가는 외부 링크. 늘리기보다 줄이는 쪽으로 유지한다. */
 export const LINKS = [
-  { label: 'YouTube', href: 'https://www.youtube.com/@sudoremove' },
   { label: 'GitHub', href: 'https://github.com/NotoriousH2' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hyungho-byun-6b2588224/' },
   { label: 'RSS', href: '/feed.xml' },
@@ -21,7 +20,6 @@ export const LINKS = [
 /** 소개 페이지의 연락 표. 강의·자문 문의는 업무용 주소로 받는다. */
 export const CONTACT = [
   { label: 'Email', text: 'notolab.ceo@gmail.com', href: 'mailto:notolab.ceo@gmail.com' },
-  { label: 'YouTube', text: '@sudoremove', href: 'https://www.youtube.com/@sudoremove' },
   { label: 'LinkedIn', text: 'hyungho-byun', href: 'https://www.linkedin.com/in/hyungho-byun-6b2588224/' },
   { label: 'GitHub', text: 'NotoriousH2', href: 'https://github.com/NotoriousH2' },
   { label: 'RSS', text: '/feed.xml', href: '/feed.xml' },

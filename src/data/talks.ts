@@ -1,8 +1,11 @@
 import type { CategoryId } from './taxonomy';
 
 /**
- * 발표와 영상. 글·강의와 같은 범주 축을 공유한다.
- * 주 링크(href)는 볼 수 있는 것 — 영상이 있으면 영상, 없으면 자료.
+ * 출연과 공개 자료. 글·강의와 같은 범주 축을 공유한다.
+ *
+ * 전부 남이 여는 자리에 나간 기록이다. 운영하는 채널이 아니므로 채널 주소는 두지 않고,
+ * 각 항목에서 실제로 볼 수 있는 것(영상 또는 자료)만 연결한다.
+ * venue는 어디에 나갔는지를 적는 평문이다. 링크가 아니다.
  */
 export interface Talk {
   title: string;
@@ -15,16 +18,10 @@ export interface Talk {
   slides?: { label: string; href: string };
 }
 
-export const TALK_CHANNEL = {
-  label: 'YouTube · SudoRemove',
-  href: 'https://www.youtube.com/@sudoremove',
-  blurb: '논문과 신규 모델 리뷰를 올립니다.',
-};
-
 export const TALKS: Talk[] = [
   {
     title: 'Moonshot AI Kimi K3 모델 리뷰',
-    venue: 'SudoRemove',
+    venue: '유튜브 SudoRemove',
     date: '2026.08',
     category: 'models',
     href: 'https://www.youtube.com/watch?v=njM0LT4s6_0',
@@ -35,7 +32,7 @@ export const TALKS: Talk[] = [
   },
   {
     title: '하네스 · 루프 · 그래프 엔지니어링, 순서대로 이해하기',
-    venue: 'SudoRemove',
+    venue: '유튜브 SudoRemove',
     date: '2026.08',
     category: 'context',
     href: 'https://www.youtube.com/watch?v=lokHQ8_b5Rk',
@@ -46,7 +43,7 @@ export const TALKS: Talk[] = [
   },
   {
     title: 'DeepSeek Engram 페이퍼 리뷰',
-    venue: 'SudoRemove',
+    venue: '유튜브 SudoRemove',
     date: '2026.01',
     category: 'models',
     href: 'https://www.youtube.com/watch?v=Xr6oLkClF6w',
@@ -57,7 +54,7 @@ export const TALKS: Talk[] = [
   },
   {
     title: 'Mixture of Experts',
-    venue: 'SudoRemove',
+    venue: '유튜브 SudoRemove',
     date: '2025',
     category: 'models',
     href: 'https://www.youtube.com/watch?v=qpHgHcWxB5I',
@@ -68,7 +65,7 @@ export const TALKS: Talk[] = [
   },
   {
     title: 'Long-Context Attention과 Qwen-3-Next',
-    venue: 'SudoRemove',
+    venue: '유튜브 SudoRemove',
     date: '2025',
     category: 'models',
     href: 'https://www.youtube.com/watch?v=Vu5n6mFMsDQ',
@@ -79,7 +76,7 @@ export const TALKS: Talk[] = [
   },
   {
     title: 'LLM의 새로운 전환점, Reasoning 모델 이해하기 (Feat. DeepSeek R1)',
-    venue: '테디노트 협업',
+    venue: '유튜브 테디노트',
     date: '2025',
     category: 'models',
     href: 'https://www.youtube.com/watch?v=Z-ELkZ_azYM',
@@ -103,3 +100,6 @@ export const TALKS: Talk[] = [
     href: 'https://fastcampus.co.kr/sem_mat_06',
   },
 ];
+
+/** 최신순. 배열에 손으로 끼워 넣어도 순서가 흐트러지지 않는다. */
+export const TALKS_BY_DATE: Talk[] = [...TALKS].sort((a, b) => b.date.localeCompare(a.date));

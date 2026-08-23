@@ -53,6 +53,13 @@ export const TALKS: Talk[] = [
     },
   },
   {
+    title: 'Agent를 위한 Fine Tuning',
+    venue: 'InstructKR 밋업',
+    date: '2025.12',
+    category: 'tuning',
+    href: 'https://drive.google.com/file/d/12uSBxT0L1Hz7ulJwYiIF8W0p4as78xk5/view?usp=sharing',
+  },
+  {
     title: 'Mixture of Experts',
     venue: '유튜브 SudoRemove',
     date: '2025',

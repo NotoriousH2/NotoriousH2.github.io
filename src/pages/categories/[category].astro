@@ -34,14 +34,13 @@ for (const post of posts) {
 ---
 
 <Base title={category.label} description={category.blurb}>
-  <div class="section-head">
-    <h2>범주</h2>
-    <span class="meter meter--faint">{posts.length}편</span>
-  </div>
-
-  <header class="head" style={`--tag-color: var(--cat-${categoryId})`}>
-    <h1>{category.label}</h1>
-    <p>{category.blurb}</p>
+  <header class="page-head" style={`--tag-color: var(--cat-${categoryId})`}>
+    <p class="page-head__eyebrow">
+      <span class="meter">범주</span>
+      <span class="meter meter--faint">{posts.length}편</span>
+    </p>
+    <h1><span class="rule" aria-hidden="true"></span>{category.label}</h1>
+    <p class="page-head__lede">{category.blurb}</p>
   </header>
 
   <PostList posts={posts} />
@@ -59,20 +58,19 @@ for (const post of posts) {
 </Base>
 
 <style>
-  .head {
-    margin: 1.4rem 0 2rem;
-    padding-left: 1rem;
-    border-left: 2px solid var(--tag-color);
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
   }
 
-  .head h1 {
-    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
-  }
-
-  .head p {
-    margin: 0.55rem 0 0;
-    color: var(--text-muted);
-    max-width: 32rem;
+  /* 범주 색은 제목 옆 짧은 선으로만 나타난다. 넓은 면에는 칠하지 않는다. */
+  .rule {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--tag-color);
+    flex: none;
   }
 
   .tags {

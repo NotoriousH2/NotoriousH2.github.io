@@ -37,14 +37,13 @@ const related = [...neighbors.entries()].sort((a, b) => b[1] - a[1] || a[0].loca
 ---
 
 <Base title={meta.label} description={`${meta.label} 태그가 붙은 글 ${posts.length}편.`}>
-  <div class="section-head">
-    <h2>태그</h2>
-    <span class="meter meter--faint">{posts.length}편</span>
-  </div>
-
-  <header class="head" style={`--tag-color: var(--cat-${meta.category})`}>
+  <header class="page-head" style={`--tag-color: var(--cat-${meta.category})`}>
+    <p class="page-head__eyebrow">
+      <span class="meter">태그</span>
+      <span class="meter meter--faint">{posts.length}편</span>
+    </p>
     <h1>{meta.label}</h1>
-    <p class="meter">
+    <p class="cat-line meter">
       <a class="cat" href={`/categories/${category.id}`}>{category.label}</a>
     </p>
   </header>
@@ -71,16 +70,8 @@ const related = [...neighbors.entries()].sort((a, b) => b[1] - a[1] || a[0].loca
 </Base>
 
 <style>
-  .head {
-    margin: 1.4rem 0 2rem;
-  }
-
-  .head h1 {
-    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
-  }
-
-  .head p {
-    margin: 0.5rem 0 0;
+  .cat-line {
+    margin: 0.7rem 0 0;
   }
 
   .cat {

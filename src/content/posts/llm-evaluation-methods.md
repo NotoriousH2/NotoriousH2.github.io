@@ -34,7 +34,7 @@ tags:
 
 --- 
 
-# 대표적인 LLM 성능 지표, 허깅페이스의 리더보드
+## 대표적인 LLM 성능 지표, 허깅페이스의 리더보드
 
 솔라는 허깅페이스(Huggingface)의 리더보드에서 1위를 차지했는데요.    
 리더보드의 구성을 보면, 6개의 평가 지표가 있고 그 지표의 평균으로 순위를 매긴 것을 알 수 있습니다.
@@ -47,7 +47,7 @@ tags:
 이 점수는 어떻게 구해지는 걸까요?   
 각각의 벤치마크 지표는 어떻게 구성되어 있는지 순서대로 알아봅시다.
 
-## 1) ARC
+### 1) ARC
 ARC는 2018년에 만들어진 데이터로, AI2 Reasoning Challenge의 약자입니다.    
 초등학생 과학 상식에 대한 쉬운/어려운 난이도의 문제가 주어지고, 4개의 보기 중 하나의 정답을 찾는 문제인데요. 
 <br><br>
@@ -61,7 +61,7 @@ ARC는 2018년에 만들어진 데이터로, AI2 Reasoning Challenge의 약자�
 (리더보드를 보면, `SOLAR-10.7B-Instruct` 의 정답률은 71% 입니다.)   
 ARC 벤치마크에서는 문제의 방식에 익숙해질 수 있도록 25개의 문제-정답을 질문 전에 제공하는 25-shots 프롬프트를 사용합니다.
 <br><br>
-## 2) HellaSwag
+### 2) HellaSwag
 HellaSwag은 2019년에 만들어진 데이터로, 문단의 일부가 주어지면 뒷 내용으로 적절한 내용을 4개의 보기 중에서 찾는 문제입니다.   
 Harder Endings, Longer contexts, and Lowshot Activities for Situations With Adversarial Generations 의 약자라고 합니다.   
 정답이 아닌 3개는 부적절한 내용으로 이루어져 있습니다.
@@ -75,7 +75,7 @@ Harder Endings, Longer contexts, and Lowshot Activities for Situations With Adve
 HellaSwag은 정답률로 평가하며, 10-shots 프롬프트를 사용합니다.
 
 <br><br>
-## 3) MMLU
+### 3) MMLU
 MMLU는 2021년에 만들어진 데이터로, 다양한 도메인의 문제를 얼마나 잘 푸는지를 평가합니다.   
 Massive Multitask Language Understanding의 약자입니다.   
 총 초등학교 수학, 미국 역사, 컴퓨터과학, 금융, 법학 등 총 57가지의 도메인으로 구성되어 있는데요. 난이도 또한 다양합니다.
@@ -87,7 +87,7 @@ Massive Multitask Language Understanding의 약자입니다.
 <br><br>
 MMLU는 5-shot 프롬프트를 사용합니다.
 <br><br>
-## 4) TruthfulQA
+### 4) TruthfulQA
 TruthfulQA는 2021년에 만들어진 데이터로, 언어 모델이 진실과 거짓을 얼마나 잘 구분하는지를 판단하는 데이터입니다.   
 건강, 법률, 금융, 정치 등의 카테고리로 이루어진 질문이고, 오해나 잘못된 믿음으로 인한 오답이 포함되어 있습니다.   
 Generation(생성), Multiple Choice(객관식 사지선다), Multiple Choice 2 (객관식, 복수 정답 허용)의 3가지 유형이 존재하는데요.   
@@ -107,7 +107,7 @@ Generation(생성), Multiple Choice(객관식 사지선다), Multiple Choice 2 (
 TruthfulQA는 6-shots 프롬프트를 사용합니다.
 
 <br><br>
-## 5) WinoGrande
+### 5) WinoGrande
 
 2019년 만들어진 데이터로, 상식 추론 능력을 테스트합니다.
 문제의 형식이 비교적 독특한데요.
@@ -122,7 +122,7 @@ TruthfulQA는 6-shots 프롬프트를 사용합니다.
 WinoGrande는 5-shots 프롬프트를 사용합니다.
 
 
-## 6) GSM8K 
+### 6) GSM8K 
 2021년 만들어진 데이터로, 초등학교 수준의 수학 문제로 구성되어 있습니다.   
 문제와 풀이과정, 정답으로 구성됩니다.
  <br><br>
@@ -156,7 +156,7 @@ LLM을 통해 사내 법규를 활용한 챗봇을 만들거나, 자연스러운
 
 
 
-# 실제 출력 결과를 비교할 수 있는 LLM Arena
+## 실제 출력 결과를 비교할 수 있는 LLM Arena
 
 벤치마크 데이터 대신, 사용자가 직접 입력을 제공하고 출력 결과를 확인할 수 있는 서비스도 존재하는데요.   
 2023년 5월에 공개된 **LLM Arena** 는 사용자가 쿼리를 입력하면, 모델별로 그 결과를 한눈에 비교할 수 있습니다.
@@ -185,7 +185,7 @@ LLM을 통해 사내 법규를 활용한 챗봇을 만들거나, 자연스러운
 
 
 
-# 평가마저도 자동화하겠다? GPT-4를 이용한 평가 메트릭
+## 평가마저도 자동화하겠다? GPT-4를 이용한 평가 메트릭
 
 허깅페이스 리더보드가 벤치마크 데이터의 성능이라면, LLM Arena는 인간 평가(Human Evaluation)의 성능이라고 볼 수 있습니다. 두 방법은 모두 유용한 성능 지표를 제공합니다.     
 
@@ -223,7 +223,7 @@ LLM을 통해 사내 법규를 활용한 챗봇을 만들거나, 자연스러운
 궁금하신 점이 있다면 댓글에 남겨주세요, 감사합니다 :)  
 
 
-### References
+#### References
 
 1. 허깅페이스 리더보드, https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard
 

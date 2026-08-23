@@ -14,16 +14,18 @@ const usage = new Map([...tagUsage(posts).entries()].map(([tag, tagged]) => [tag
   title="주제 지도"
   description="태그를 나열하는 대신 관계로 보여줍니다. 노드는 태그, 크기는 글 수, 선은 같은 글에 함께 등장한 빈도입니다."
 >
-  <div class="section-head">
-    <h2>주제 지도</h2>
-    <span class="meter meter--faint">태그 {graph.nodes.length}개</span>
-  </div>
-
-  <p class="lede">
-    태그를 목록으로 늘어놓으면 개수만 보이고 관계는 보이지 않습니다. 여기서는 같은 글에 함께
-    등장한 태그를 선으로 잇고, 색으로 소속 범주를 표시합니다. 노드를 누르면 그 태그의 글 목록으로
-    들어갑니다.
-  </p>
+  <header class="page-head">
+    <p class="page-head__eyebrow">
+      <span class="meter">주제 지도</span>
+      <span class="meter meter--faint">태그 {graph.nodes.length}개</span>
+    </p>
+    <h1>무엇과 무엇이 함께 나오는가</h1>
+    <p class="page-head__lede">
+      태그를 목록으로 늘어놓으면 개수만 보이고 관계는 보이지 않습니다. 여기서는 같은 글에 함께
+      등장한 태그를 선으로 잇고, 색으로 소속 범주를 표시합니다. 노드를 누르면 그 태그의 글
+      목록으로 들어갑니다.
+    </p>
+  </header>
 
   <TagGraph graph={graph} />
 
@@ -36,13 +38,6 @@ const usage = new Map([...tagUsage(posts).entries()].map(([tag, tagged]) => [tag
 </Base>
 
 <style>
-  .lede {
-    margin: 1.2rem 0 1.8rem;
-    max-width: 38rem;
-    color: var(--text-muted);
-    font-size: 0.97rem;
-  }
-
   .fallback {
     margin-top: var(--rhythm);
   }

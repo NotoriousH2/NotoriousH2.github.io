@@ -29,12 +29,15 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
 ---
 
 <Base title="소개" description={SITE.description}>
-  <div class="section-head">
-    <h2>소개</h2>
-  </div>
+  <header class="page-head">
+    <p class="page-head__eyebrow">
+      <span class="meter">소개</span>
+      <span class="meter meter--faint">{SITE.org}</span>
+    </p>
+    <h1>{SITE.author}</h1>
+  </header>
 
   <section class="bio">
-    <h1>{SITE.author}</h1>
     <p>
       노토랩({SITE.org}) 대표입니다. 기업과 연구소에서 LLM 파인튜닝, AI 에이전트, RAG를
       주제로 강의하고, 새로 나온 기술을 실제 업무에 어떻게 얹을지 자문합니다.
@@ -227,11 +230,6 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
 </Base>
 
 <style>
-  .bio h1 {
-    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
-    margin: 1.4rem 0 1.1rem;
-  }
-
   .bio p {
     margin: 0 0 0.9rem;
     max-width: 34rem;

@@ -96,6 +96,17 @@ h4 {
   text-wrap: balance;
 }
 
+/*
+  색과 장식을 걷어낸 화면에서 위계를 만드는 수단은 사실상 활자 크기 하나뿐이다.
+  본문 17px에 대해 페이지 제목을 2.6배까지 올려, 헤어라인만으로 버티던 구획에
+  분명한 초점을 준다.
+*/
+h1 {
+  font-size: clamp(2rem, 1.45rem + 2.4vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
 a {
   color: inherit;
   text-decoration-color: var(--line-strong);
@@ -154,6 +165,33 @@ main {
 
 .meter--faint {
   color: var(--text-faint);
+}
+
+/* ── 페이지 머리: 모노 라벨 + 큰 제목 ──────────────────────────────── */
+
+.page-head {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: 2rem;
+}
+
+.page-head__eyebrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.7rem;
+}
+
+.page-head h1 {
+  margin: 0;
+}
+
+.page-head__lede {
+  margin: 0.9rem 0 0;
+  max-width: 34rem;
+  color: var(--text-muted);
+  font-size: 1rem;
 }
 
 /* ── 섹션 제목: 헤어라인 위에 얹은 작은 라벨 ────────────────────────── */
@@ -220,32 +258,45 @@ main {
   margin-top: 1.15em;
 }
 
-.prose h1,
+/*
+  글의 h1은 레이아웃이 제목으로 이미 쓰고 있다. 본문 마크다운은 ##부터 시작한다.
+  (한 문서에 h1이 둘 이상 나오면 문서 구조가 무너진다)
+*/
 .prose h2,
-.prose h3 {
+.prose h3,
+.prose h4 {
   margin-top: 2.6em;
   margin-bottom: 0.2em;
   scroll-margin-top: 2rem;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
 }
 
-.prose h1 {
+.prose h2 {
   font-size: 1.45rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--line);
 }
 
-.prose h2 {
+.prose h3 {
   font-size: 1.22rem;
 }
 
-.prose h3 {
+.prose h4 {
   font-size: 1.08rem;
 }
 
-.prose h1 + *,
 .prose h2 + *,
-.prose h3 + * {
+.prose h3 + *,
+.prose h4 + * {
   margin-top: 0.9em;
+}
+
+/* 규약을 어기고 본문에 #을 쓴 경우에도 페이지 제목 크기로 튀지 않게 막는다. */
+.prose h1 {
+  font-size: 1.6rem;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
 }
 
 .prose a {

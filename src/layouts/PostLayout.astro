@@ -99,13 +99,15 @@ const categories = postCategories(post);
     color: var(--line-strong);
   }
 
+  /* 크기는 global.css의 h1 스케일을 그대로 쓴다. 긴 한글 제목이라 행간만 조금 붙인다. */
   h1 {
-    font-size: clamp(1.55rem, 1.1rem + 2vw, 2.15rem);
-    line-height: 1.32;
+    line-height: 1.22;
   }
 
+  /* 리드 문단은 본문보다 좁게 잡는다. 제목 바로 아래에서 한 덩어리로 읽혀야 한다. */
   .post-head__summary {
-    margin: 0.8rem 0 0;
+    margin: 0.9rem 0 0;
+    max-width: 31rem;
     font-size: 1rem;
     line-height: 1.75;
     color: var(--text-muted);

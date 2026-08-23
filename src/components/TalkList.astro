@@ -1,0 +1,45 @@
+---
+import type { Talk } from '../data/talks';
+
+interface Props {
+  talks: Talk[];
+}
+
+const { talks } = Astro.props;
+---
+
+{
+  talks.length > 0 && (
+    <dl class="specs">
+      {talks.map((talk) => (
+        <div class="spec">
+          <dt class="meter meter--faint">{talk.date}</dt>
+          <dd>
+            {/* /media와 같은 규칙: 제목 링크는 영상이 있을 때만. */}
+            <span class="item__title">
+              {talk.video ? <a href={talk.video}>{talk.title}</a> : talk.title}
+            </span>
+            <span class="meter meter--faint">
+              {talk.venue}
+              {talk.material && (
+                <>
+                  <span class="sep" aria-hidden="true">
+                    /
+                  </span>
+                  <a href={talk.material.href}>{talk.material.label}</a>
+                </>
+              )}
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+<style>
+  .sep {
+    color: var(--line-strong);
+    margin-inline: 0.45em;
+  }
+</style>

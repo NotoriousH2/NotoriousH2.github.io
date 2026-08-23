@@ -56,6 +56,7 @@ export const TAGS = {
   gpt: { label: 'GPT', category: 'models' },
 
   // 파인튜닝 — 가중치를 건드린다
+  'fine-tuning': { label: '파인튜닝', category: 'tuning' },
   cpt: { label: 'CPT', category: 'tuning' },
   sft: { label: 'SFT', category: 'tuning' },
   peft: { label: 'PEFT', category: 'tuning' },

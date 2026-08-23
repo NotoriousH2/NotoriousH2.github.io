@@ -1,34 +1,47 @@
 ---
 import PostList from '../../components/PostList.astro';
 import TagLink from '../../components/TagLink.astro';
+import TalkList from '../../components/TalkList.astro';
+import { TALKS_BY_DATE, type Talk } from '../../data/talks';
 import { TAGS, getCategory, type TagId } from '../../data/taxonomy';
 import Base from '../../layouts/Base.astro';
-import { getPosts, tagUsage, type Post } from '../../lib/posts';
+import { getPosts, talksByTag, type Post } from '../../lib/posts';
 
-/** 글이 실제로 붙어 있는 태그만 페이지를 만든다. 빈 페이지를 남기지 않는다. */
+/**
+ * 글이든 미디어든 하나라도 붙어 있는 태그만 페이지를 만든다.
+ * 태그는 두 종류의 항목을 함께 묶는 축이라, 글이 없어도 미디어만으로 페이지가 선다.
+ */
 export async function getStaticPaths() {
   const posts = await getPosts();
-  const usage = tagUsage(posts);
-  return [...usage.entries()].map(([tag, tagged]) => ({
+  const ids = new Set<TagId>();
+  for (const post of posts) for (const tag of post.data.tags) ids.add(tag as TagId);
+  for (const talk of TALKS_BY_DATE) for (const tag of talk.tags) ids.add(tag);
+
+  return [...ids].map((tag) => ({
     params: { tag },
-    props: { tag, posts: tagged },
+    props: {
+      tag,
+      posts: posts.filter((p) => (p.data.tags as TagId[]).includes(tag)),
+      talks: talksByTag(TALKS_BY_DATE, tag),
+    },
   }));
 }
 
 interface Props {
   tag: TagId;
   posts: Post[];
+  talks: Talk[];
 }
 
-const { tag, posts } = Astro.props;
+const { tag, posts, talks } = Astro.props;
 const meta = TAGS[tag];
 const category = getCategory(meta.category);
+const total = posts.length + talks.length;
 
-// 같은 글에 함께 등장한 다른 태그들.
+// 같은 항목에 함께 등장한 다른 태그들. 글과 미디어를 모두 센다.
 const neighbors = new Map<TagId, number>();
-for (const post of posts) {
-  for (const raw of post.data.tags) {
-    const other = raw as TagId;
+for (const group of [...posts.map((p) => p.data.tags as TagId[]), ...talks.map((t) => t.tags)]) {
+  for (const other of group) {
     if (other === tag) continue;
     neighbors.set(other, (neighbors.get(other) ?? 0) + 1);
   }
@@ -36,11 +49,15 @@ for (const post of posts) {
 const related = [...neighbors.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 ---
 
-<Base title={meta.label} description={`${meta.label} 태그가 붙은 글 ${posts.length}편.`}>
+<Base title={meta.label} description={`${meta.label} 태그가 붙은 글과 미디어 ${total}건.`}>
   <header class="page-head" style={`--tag-color: var(--cat-${meta.category})`}>
     <p class="page-head__eyebrow">
       <span class="meter">태그</span>
-      <span class="meter meter--faint">{posts.length}편</span>
+      <span class="meter meter--faint">
+        {posts.length > 0 && `글 ${posts.length}편`}
+        {posts.length > 0 && talks.length > 0 && ' · '}
+        {talks.length > 0 && `미디어 ${talks.length}건`}
+      </span>
     </p>
     <h1>{meta.label}</h1>
     <p class="cat-line meter">
@@ -48,11 +65,31 @@ const related = [...neighbors.entries()].sort((a, b) => b[1] - a[1] || a[0].loca
     </p>
   </header>
 
-  <PostList posts={posts} />
+  {
+    posts.length > 0 && (
+      <section>
+        <div class="section-head">
+          <h2>글</h2>
+        </div>
+        <PostList posts={posts} />
+      </section>
+    )
+  }
+
+  {
+    talks.length > 0 && (
+      <section class:list={[{ stacked: posts.length > 0 }]}>
+        <div class="section-head">
+          <h2>미디어</h2>
+        </div>
+        <TalkList talks={talks} />
+      </section>
+    )
+  }
 
   {
     related.length > 0 && (
-      <section class="related">
+      <section class="stacked">
         <div class="section-head">
           <h2>함께 등장한 태그</h2>
         </div>
@@ -94,11 +131,11 @@ const related = [...neighbors.entries()].sort((a, b) => b[1] - a[1] || a[0].loca
     color: var(--text);
   }
 
-  .related {
+  .stacked {
     margin-top: var(--rhythm);
   }
 
-  .related .tag-row {
+  .tag-row {
     padding-block: 1rem;
   }
 

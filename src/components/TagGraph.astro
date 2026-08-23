@@ -37,7 +37,7 @@ const usedCategories = CATEGORIES.filter((c) => nodes.some((n) => n.category ===
         <svg
           viewBox={`0 0 ${width} ${height}`}
           role="img"
-          aria-label={`태그 ${nodes.length}개의 공출현 관계도. 노드 크기는 글 수, 색은 범주, 선의 진하기는 함께 등장한 빈도입니다.`}
+          aria-label={`태그 ${nodes.length}개의 공출현 관계도. 노드 크기는 글과 미디어를 합친 항목 수, 색은 범주, 선의 진하기는 함께 등장한 빈도입니다.`}
           data-graph
         >
           <g class="edges" fill="none" stroke="currentColor" stroke-linecap="round">
@@ -66,7 +66,7 @@ const usedCategories = CATEGORIES.filter((c) => nodes.some((n) => n.category ===
                 data-neighbors={(adjacency.get(node.id) ?? []).join(' ')}
                 style={`--tag-color: var(--cat-${node.category})`}
               >
-                <title>{`${node.label} — 글 ${node.count}편`}</title>
+                <title>{`${node.label} — ${node.count}건`}</title>
                 <circle cx={node.x} cy={node.y} r={node.r} class="node__disc" />
                 {showCounts && (
                   <text x={node.x} y={node.y} class="node__count" text-anchor="middle" dy="0.36em">
@@ -83,7 +83,7 @@ const usedCategories = CATEGORIES.filter((c) => nodes.some((n) => n.category ===
       </div>
 
       <figcaption class="meter meter--faint">
-        노드 = 태그 · 크기 = 글 수 · 선 = 같은 글에 함께 등장한 빈도 · 색 = 범주
+        노드 = 태그 · 크기 = 항목 수 · 선 = 함께 등장한 빈도 · 색 = 범주
       </figcaption>
     </figure>
   )

@@ -1,32 +1,41 @@
 ---
 import CategoryTagList from '../../components/CategoryTagList.astro';
 import PostList from '../../components/PostList.astro';
+import TalkList from '../../components/TalkList.astro';
+import { TALKS_BY_DATE, type Talk } from '../../data/talks';
 import { TAGS, getCategory, type CategoryId, type TagId } from '../../data/taxonomy';
 import Base from '../../layouts/Base.astro';
-import { categoryUsage, getPosts, type Post } from '../../lib/posts';
+import { categoryUsage, getPosts, talksByCategory, type Post } from '../../lib/posts';
 
-/** 글이 있는 범주만 페이지를 만든다. */
+/** 글이든 미디어든 하나라도 붙어 있는 범주만 페이지를 만든다. */
 export async function getStaticPaths() {
   const posts = await getPosts();
-  const usage = categoryUsage(posts);
-  return [...usage.entries()].map(([category, tagged]) => ({
+  const byCategory = categoryUsage(posts);
+  const ids = new Set<CategoryId>([...byCategory.keys(), ...TALKS_BY_DATE.map((t) => t.category)]);
+
+  return [...ids].map((category) => ({
     params: { category },
-    props: { category, posts: tagged },
+    props: {
+      category,
+      posts: byCategory.get(category) ?? [],
+      talks: talksByCategory(TALKS_BY_DATE, category),
+    },
   }));
 }
 
 interface Props {
   category: CategoryId;
   posts: Post[];
+  talks: Talk[];
 }
 
-const { category: categoryId, posts } = Astro.props;
+const { category: categoryId, posts, talks } = Astro.props;
 const category = getCategory(categoryId);
 
+// 이 범주에 속한 태그 중 실제로 쓰인 것. 글과 미디어를 함께 센다.
 const usage = new Map<TagId, number>();
-for (const post of posts) {
-  for (const raw of post.data.tags) {
-    const tag = raw as TagId;
+for (const group of [...posts.map((p) => p.data.tags as TagId[]), ...talks.map((t) => t.tags)]) {
+  for (const tag of group) {
     if (TAGS[tag].category !== categoryId) continue;
     usage.set(tag, (usage.get(tag) ?? 0) + 1);
   }
@@ -37,17 +46,41 @@ for (const post of posts) {
   <header class="page-head" style={`--tag-color: var(--cat-${categoryId})`}>
     <p class="page-head__eyebrow">
       <span class="meter">범주</span>
-      <span class="meter meter--faint">{posts.length}편</span>
+      <span class="meter meter--faint">
+        {posts.length > 0 && `글 ${posts.length}편`}
+        {posts.length > 0 && talks.length > 0 && ' · '}
+        {talks.length > 0 && `미디어 ${talks.length}건`}
+      </span>
     </p>
     <h1><span class="rule" aria-hidden="true"></span>{category.label}</h1>
     <p class="page-head__lede">{category.blurb}</p>
   </header>
 
-  <PostList posts={posts} />
+  {
+    posts.length > 0 && (
+      <section>
+        <div class="section-head">
+          <h2>글</h2>
+        </div>
+        <PostList posts={posts} />
+      </section>
+    )
+  }
+
+  {
+    talks.length > 0 && (
+      <section class:list={[{ stacked: posts.length > 0 }]}>
+        <div class="section-head">
+          <h2>미디어</h2>
+        </div>
+        <TalkList talks={talks} />
+      </section>
+    )
+  }
 
   {
     usage.size > 0 && (
-      <section class="tags">
+      <section class="stacked">
         <div class="section-head">
           <h2>이 범주의 태그</h2>
         </div>
@@ -64,7 +97,7 @@ for (const post of posts) {
     gap: 0.55rem;
   }
 
-  /* 범주 색은 제목 옆 짧은 선으로만 나타난다. 넓은 면에는 칠하지 않는다. */
+  /* 범주 색은 제목 옆 짧은 점으로만 나타난다. 넓은 면에는 칠하지 않는다. */
   .rule {
     width: 0.5rem;
     height: 0.5rem;
@@ -73,7 +106,7 @@ for (const post of posts) {
     flex: none;
   }
 
-  .tags {
+  .stacked {
     margin-top: var(--rhythm);
   }
 </style>

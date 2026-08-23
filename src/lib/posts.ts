@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
+import type { Talk } from '../data/talks';
 import { CATEGORIES, type CategoryId, type TagId, TAGS } from '../data/taxonomy';
 
 export type Post = CollectionEntry<'posts'>;
@@ -77,4 +78,32 @@ export function formatYearMonth(date: Date): string {
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
   return `${m}.${d}`;
+}
+
+/**
+ * 태그는 글만의 것이 아니다. 미디어 항목도 같은 태그를 달고 있어서, 태그별 목록과
+ * 주제 지도는 둘을 함께 센다. (미디어 화면에는 태그를 표시하지 않는다)
+ */
+export function tagUsageAll(posts: Post[], talks: Talk[]): Map<TagId, number> {
+  const usage = new Map<TagId, number>();
+  const bump = (tag: TagId) => usage.set(tag, (usage.get(tag) ?? 0) + 1);
+  for (const post of posts) for (const tag of post.data.tags) bump(tag as TagId);
+  for (const talk of talks) for (const tag of talk.tags) bump(tag);
+  return usage;
+}
+
+/** 주제 지도의 간선을 만들 재료. 글 한 편, 미디어 한 건이 각각 하나의 묶음이다. */
+export function tagGroups(posts: Post[], talks: Talk[]): TagId[][] {
+  return [
+    ...posts.map((post) => post.data.tags as TagId[]),
+    ...talks.map((talk) => talk.tags),
+  ];
+}
+
+export function talksByTag(talks: Talk[], tag: TagId): Talk[] {
+  return talks.filter((talk) => talk.tags.includes(tag));
+}
+
+export function talksByCategory(talks: Talk[], category: CategoryId): Talk[] {
+  return talks.filter((talk) => talk.category === category);
 }

@@ -1,5 +1,5 @@
 ---
-import { TALKS, TALKS_BY_DATE } from '../data/talks';
+import { TALKS, TALKS_BY_DATE, thumbnailFor } from '../data/talks';
 import { CATEGORIES } from '../data/taxonomy';
 import Base from '../layouts/Base.astro';
 
@@ -9,10 +9,7 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
 const usedCategories = CATEGORIES.filter((c) => TALKS.some((t) => t.category === c.id));
 ---
 
-<Base
-  title="미디어"
-  description="유튜브 출연과 세미나 발표 자료 모음."
->
+<Base title="미디어" description="유튜브 출연과 세미나 발표 자료 모음.">
   <header class="page-head">
     <p class="page-head__eyebrow">
       <span class="meter meter--faint">{TALKS.length}건</span>
@@ -32,36 +29,65 @@ const usedCategories = CATEGORIES.filter((c) => TALKS.some((t) => t.category ===
 
   <dl class="specs">
     {
-      TALKS_BY_DATE.map((talk) => (
-        <div class="spec" style={`--tag-color: var(--cat-${talk.category})`}>
-          <dt class="meter dot">
-            {talk.date}
-            <span class="visually-hidden">, 범주 {categoryLabel(talk.category)}</span>
-          </dt>
-          <dd>
-            <span class="item__title">
-              <a href={talk.href}>{talk.title}</a>
-            </span>
-            <span class="meter meter--faint">
-              {talk.venue}
-              {talk.slides && (
-                <>
-                  <span class="sep" aria-hidden="true">
-                    /
-                  </span>
-                  <a href={talk.slides.href}>{talk.slides.label}</a>
-                </>
+      TALKS_BY_DATE.map((talk) => {
+        const thumb = thumbnailFor(talk);
+        return (
+          <div class="spec" style={`--tag-color: var(--cat-${talk.category})`}>
+            <dt class="meter dot">
+              {talk.date}
+              <span class="visually-hidden">, 범주 {categoryLabel(talk.category)}</span>
+            </dt>
+            <dd>
+              {/* 제목 링크는 영상이 있을 때만. 자료뿐인 항목은 아래 상자가 목적지다. */}
+              <span class="item__title">
+                {talk.video ? <a href={talk.video}>{talk.title}</a> : talk.title}
+              </span>
+
+              <span class="meter meter--faint">
+                {talk.venue}
+                {talk.video && talk.material && (
+                  <>
+                    <span class="sep" aria-hidden="true">
+                      /
+                    </span>
+                    <a href={talk.material.href}>{talk.material.label}</a>
+                  </>
+                )}
+              </span>
+
+              {thumb && talk.video ? (
+                <a class="thumb" href={talk.video} aria-label={`${talk.title} 영상 보기`}>
+                  <img
+                    src={thumb}
+                    alt=""
+                    width="320"
+                    height="180"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+              ) : (
+                talk.material && (
+                  <a
+                    class="thumb thumb--blank"
+                    href={talk.material.href}
+                    aria-label={`${talk.title} ${talk.material.label} 보기`}
+                  >
+                    <span class="meter">{talk.material.label}</span>
+                  </a>
+                )
               )}
-            </span>
-            {talk.note && (
-              <p class="revisit">
-                <span class="meter revisit__asof">{talk.note.asOf} 기준</span>
-                <span class="revisit__text">{talk.note.text}</span>
-              </p>
-            )}
-          </dd>
-        </div>
-      ))
+
+              {talk.note && (
+                <p class="revisit">
+                  <span class="meter revisit__asof">{talk.note.asOf} 기준</span>
+                  <span class="revisit__text">{talk.note.text}</span>
+                </p>
+              )}
+            </dd>
+          </div>
+        );
+      })
     }
   </dl>
 </Base>
@@ -104,9 +130,52 @@ const usedCategories = CATEGORIES.filter((c) => TALKS.some((t) => t.category ===
     margin-inline: 0.45em;
   }
 
+  /*
+    무슨 링크인지 한눈에 알리는 것이 목적이다. 작게 두어 데이터 표식으로 읽히게 하고,
+    영상이 없는 항목도 같은 자리를 같은 크기로 채워 목록에 구멍이 생기지 않게 한다.
+  */
+  .thumb {
+    display: block;
+    width: 14rem;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-top: 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--bg-sunken);
+  }
+
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumb:hover {
+    border-color: var(--line-strong);
+  }
+
+  /* 영상이 없는 항목: 같은 틀에 무엇이 있는지만 적는다. */
+  .thumb--blank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .thumb--blank .meter {
+    color: var(--text-faint);
+  }
+
+  .thumb--blank:hover .meter {
+    color: var(--text-muted);
+  }
+
   /* 덧붙인 말. 원본 설명과 층을 가르기 위해 왼쪽 헤어라인으로만 구획한다. */
   .revisit {
-    margin: 0.55rem 0 0.15rem;
+    margin: 0.7rem 0 0.15rem;
     padding-left: 0.8rem;
     border-left: 1px solid var(--line-strong);
     display: flex;

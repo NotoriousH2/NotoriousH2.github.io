@@ -2,12 +2,14 @@
 import CategoryTagList from '../components/CategoryTagList.astro';
 import TagGraph from '../components/TagGraph.astro';
 import Base from '../layouts/Base.astro';
+import { TALKS } from '../data/talks';
 import { buildGraph } from '../lib/graph';
-import { getPosts, tagUsage } from '../lib/posts';
+import { getPosts, tagGroups, tagUsageAll } from '../lib/posts';
 
 const posts = await getPosts();
-const graph = buildGraph(posts);
-const usage = new Map([...tagUsage(posts).entries()].map(([tag, tagged]) => [tag, tagged.length]));
+// 글과 미디어가 같은 태그 축을 공유한다. 그래프는 둘을 함께 센다.
+const graph = buildGraph(tagGroups(posts, TALKS));
+const usage = tagUsageAll(posts, TALKS);
 ---
 
 <Base
@@ -19,7 +21,7 @@ const usage = new Map([...tagUsage(posts).entries()].map(([tag, tagged]) => [tag
       <span class="meter meter--faint">태그 {graph.nodes.length}개</span>
     </p>
     <h1>주제 지도</h1>
-    <p class="page-head__lede">노드를 누르면 해당 태그의 글 목록으로 연결됩니다.</p>
+    <p class="page-head__lede">노드를 누르면 해당 태그의 목록으로 연결됩니다.</p>
   </header>
 
   <TagGraph graph={graph} />

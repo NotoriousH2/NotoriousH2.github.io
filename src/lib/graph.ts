@@ -11,7 +11,6 @@ import {
 } from 'd3-force';
 
 import { type CategoryId, type TagId, TAGS } from '../data/taxonomy';
-import { type Post, tagUsage } from './posts';
 
 export interface GraphNode extends SimulationNodeDatum {
   id: TagId;
@@ -79,16 +78,22 @@ function withSeededRandom<T>(seed: number, fn: () => T): T {
  * 태그 공출현 그래프를 빌드 시점에 완전히 수렴시킨다.
  * 브라우저에서 물리 시뮬레이션이 돌지 않으므로 계속 떠다니는 화면이 생기지 않고,
  * JS가 꺼져 있어도 SVG가 그대로 보인다.
+ *
+ * 입력은 '태그 묶음' 목록이다. 글 한 편도 묶음 하나, 미디어 한 건도 묶음 하나로
+ * 똑같이 센다. 그래프가 글만의 지도가 아니라 사이트 전체의 주제 지도이기 때문이다.
  */
-export function buildGraph(posts: Post[]): Graph {
-  const usage = tagUsage(posts);
+export function buildGraph(groups: TagId[][]): Graph {
+  const usage = new Map<TagId, number>();
+  for (const group of groups) {
+    for (const tag of group) usage.set(tag, (usage.get(tag) ?? 0) + 1);
+  }
 
   const nodes: GraphNode[] = [...usage.entries()]
-    .map(([id, tagged]) => ({
+    .map(([id, count]) => ({
       id,
       label: TAGS[id].label,
       category: TAGS[id].category,
-      count: tagged.length,
+      count,
       r: 0,
     }))
     .sort((a, b) => b.count - a.count || a.id.localeCompare(b.id));
@@ -104,8 +109,8 @@ export function buildGraph(posts: Post[]): Graph {
   }
 
   const weights = new Map<string, number>();
-  for (const post of posts) {
-    const tags = ([...post.data.tags] as TagId[]).sort();
+  for (const group of groups) {
+    const tags = [...group].sort();
     for (let i = 0; i < tags.length; i++) {
       for (let j = i + 1; j < tags.length; j++) {
         const key = `${tags[i]} ${tags[j]}`;

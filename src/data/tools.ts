@@ -18,32 +18,32 @@ export const TOOLS: Tool[] = [
   {
     name: 'LLM Token Counter',
     kind: '웹',
-    summary: '텍스트나 파일(PDF·DOCX·TXT·MD)을 넣으면 GPT, Claude, Gemini, Hugging Face 모델별 토큰 수를 한 번에 센다.',
+    summary: '텍스트나 파일(PDF·DOCX·TXT·MD)의 토큰 수를 GPT, Claude, Gemini, Hugging Face 모델별로 셉니다.',
     href: 'https://notolab.64bit.kr/tokenizer/',
     repo: 'https://github.com/NotoriousH2/llm_token_counter',
   },
   {
     name: 'LLM Prob Visualizer',
     kind: '웹',
-    summary: 'Hugging Face 모델이 다음 토큰에 매기는 확률 분포를 토큰 단위로 펼쳐 본다.',
+    summary: 'Hugging Face 모델이 다음 토큰에 매기는 확률 분포를 토큰 단위로 보여 줍니다.',
     href: 'https://github.com/NotoriousH2/llm-prob-visualizer',
   },
   {
     name: 'LLM Token Visualizer',
     kind: '웹',
-    summary: '문장이 토크나이저에서 어떻게 쪼개지는지 눈으로 확인한다.',
+    summary: '문장이 토크나이저에서 어떻게 쪼개지는지 보여 줍니다.',
     href: 'https://github.com/NotoriousH2/llm_token_visualizer',
   },
   {
     name: 'ArXiv PDF Renamer',
     kind: '크롬 확장',
-    summary: 'arXiv 논문을 내려받을 때 2501.12345.pdf 대신 실제 제목으로 저장한다.',
+    summary: 'arXiv 논문을 2501.12345.pdf 대신 실제 제목으로 저장합니다.',
     href: 'https://github.com/NotoriousH2/arxiv-pdf-renamer',
   },
   {
     name: 'fluent-korean',
     kind: '플러그인',
-    summary: 'Claude Code가 번역투 없는 한국어를 쓰게 만드는 output-style 플러그인.',
+    summary: 'Claude Code가 번역투 없는 한국어를 쓰게 만드는 output-style 플러그인입니다.',
     href: 'https://github.com/NotoriousH2/fluent-korean',
   },
 ];

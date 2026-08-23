@@ -264,10 +264,15 @@ main {
 
 /*
   머리말이 이미 규칙선을 그었다면 목록이 바로 아래에 같은 선을 또 긋지 않는다.
-  (헤어라인 두 줄이 30px 간격으로 겹쳐 보이던 문제)
+  홈에서는 두 선의 간격이 5px까지 좁아져 한 줄이 두껍게 뭉개져 보였다.
+
+  아카이브처럼 앞에 선 없는 연도 라벨이 오는 자리에서는 목록의 윗선이 그대로 필요하므로,
+  선을 없애는 게 아니라 '머리말 바로 다음'일 때만 끈다.
 */
 .page-head + .specs,
-.section-head + .specs {
+.page-head + .post-list,
+.section-head + .specs,
+.section-head + .post-list {
   border-top: 0;
   margin-top: 1rem;
 }

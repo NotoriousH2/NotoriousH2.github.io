@@ -28,11 +28,11 @@ export interface Category {
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'models', label: '모델', blurb: '모델의 구조와 성능, 그리고 그 차이가 어디서 오는지.', hue: 262 },
-  { id: 'tuning', label: '파인튜닝', blurb: '가중치를 학습시켜 모델 자체를 바꾸는 일.', hue: 150 },
-  { id: 'context', label: '컨텍스트', blurb: '학습하지 않고 입력 쪽에서 성능을 끌어내는 일.', hue: 318 },
-  { id: 'ops', label: '평가·운영', blurb: '성능을 재고, 돌리고, 비용을 맞추는 일.', hue: 205 },
-  { id: 'industry', label: '산업', blurb: '모델을 만들어 내놓는 회사들과 그 발표.', hue: 42 },
+  { id: 'models', label: '모델', blurb: '모델의 구조와 성능', hue: 262 },
+  { id: 'tuning', label: '파인튜닝', blurb: '가중치를 바꾸는 학습', hue: 150 },
+  { id: 'context', label: '컨텍스트', blurb: '학습 대신 입력을 설계하는 방법', hue: 318 },
+  { id: 'ops', label: '평가·운영', blurb: '성능 측정, 서빙, 비용', hue: 205 },
+  { id: 'industry', label: '산업', blurb: '모델을 내놓는 회사와 발표', hue: 42 },
 ] as const;
 
 export interface Tag {

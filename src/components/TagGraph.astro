@@ -1,0 +1,235 @@
+---
+import { CATEGORIES } from '../data/taxonomy';
+import type { Graph } from '../lib/graph';
+
+interface Props {
+  graph: Graph;
+}
+
+const { graph } = Astro.props;
+const { nodes, links, width, height, maxWeight, maxCount } = graph;
+
+// 전부 같은 값이면 숫자를 찍지 않는다. 크기만으로 이미 다 말했거나, 말할 게 없거나 둘 중 하나다.
+const showCounts = maxCount > 1;
+
+/** 노드에 붙은 간선을 미리 계산해 둔다. 강조는 CSS 클래스 토글만으로 끝난다. */
+const adjacency = new Map<string, string[]>();
+for (const link of links) {
+  adjacency.set(link.source, [...(adjacency.get(link.source) ?? []), link.target]);
+  adjacency.set(link.target, [...(adjacency.get(link.target) ?? []), link.source]);
+}
+
+const usedCategories = CATEGORIES.filter((c) => nodes.some((n) => n.category === c.id));
+---
+
+{
+  nodes.length > 0 && (
+    <figure class="graph">
+      <ul class="legend">
+        {usedCategories.map((category) => (
+          <li class="meter" style={`--tag-color: var(--cat-${category.id})`}>
+            <a href={`/categories/${category.id}`}>{category.label}</a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="graph__frame">
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          role="img"
+          aria-label={`태그 ${nodes.length}개의 공출현 관계도. 노드 크기는 글 수, 색은 범주, 선의 진하기는 함께 등장한 빈도입니다.`}
+          data-graph
+        >
+          <g class="edges" fill="none" stroke="currentColor" stroke-linecap="round">
+            {links.map((link) => (
+              <line
+                x1={link.x1}
+                y1={link.y1}
+                x2={link.x2}
+                y2={link.y2}
+                stroke-width={0.8 + (link.weight / Math.max(1, maxWeight)) * 1.6}
+                opacity={0.28 + (link.weight / Math.max(1, maxWeight)) * 0.34}
+                data-edge
+                data-a={link.source}
+                data-b={link.target}
+              >
+                <title>{`${link.source} — ${link.target}: 함께 ${link.weight}회`}</title>
+              </line>
+            ))}
+          </g>
+
+          <g class="nodes">
+            {nodes.map((node) => (
+              <a
+                href={`/tags/${node.id}`}
+                data-node={node.id}
+                data-neighbors={(adjacency.get(node.id) ?? []).join(' ')}
+                style={`--tag-color: var(--cat-${node.category})`}
+              >
+                <title>{`${node.label} — 글 ${node.count}편`}</title>
+                <circle cx={node.x} cy={node.y} r={node.r} class="node__disc" />
+                {showCounts && (
+                  <text x={node.x} y={node.y} class="node__count" text-anchor="middle" dy="0.36em">
+                    {node.count}
+                  </text>
+                )}
+                <text x={node.x} y={(node.y ?? 0) + node.r + 14} class="node__label" text-anchor="middle">
+                  {node.label}
+                </text>
+              </a>
+            ))}
+          </g>
+        </svg>
+      </div>
+
+      <figcaption class="meter meter--faint">
+        노드 = 태그 · 크기 = 글 수 · 선 = 같은 글에 함께 등장한 빈도 · 색 = 범주
+      </figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .graph {
+    margin: 0;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+  }
+
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+  }
+
+  .legend li::before {
+    content: '';
+    width: 0.46em;
+    height: 0.46em;
+    border-radius: 50%;
+    background: var(--tag-color);
+  }
+
+  .legend a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .legend a:hover {
+    color: var(--text);
+  }
+
+  .graph__frame {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+
+  /*
+    좁은 화면에서 그대로 축소하면 라벨이 읽을 수 없는 크기가 된다.
+    최소 너비를 두어 프레임 안에서 가로로 넘기게 하고, 바로 아래 '범주별 태그' 목록이
+    그래프를 볼 수 없는 상황의 대체 화면 역할을 한다.
+  */
+  svg {
+    display: block;
+    width: 100%;
+    min-width: 34rem;
+    height: auto;
+    color: var(--line-strong);
+  }
+
+  .node__disc {
+    fill: color-mix(in oklab, var(--tag-color) 13%, var(--bg));
+    stroke: var(--tag-color);
+    stroke-width: 1.4;
+  }
+
+  .node__count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    fill: var(--tag-color);
+  }
+
+  .node__label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--text-muted);
+  }
+
+  .nodes a {
+    cursor: pointer;
+  }
+
+  .nodes a:hover .node__disc,
+  .nodes a:focus-visible .node__disc {
+    fill: color-mix(in oklab, var(--tag-color) 26%, var(--bg));
+  }
+
+  .nodes a:hover .node__label,
+  .nodes a:focus-visible .node__label {
+    fill: var(--text);
+  }
+
+  .nodes a:focus-visible {
+    outline: none;
+  }
+
+  .nodes a:focus-visible .node__disc {
+    stroke-width: 2.6;
+  }
+
+  /* 강조: 물리 시뮬레이션이 아니라 불투명도만 바뀐다. 배치는 절대 움직이지 않는다. */
+  svg[data-graph].is-focusing .dimmed {
+    opacity: 0.12;
+  }
+
+  svg[data-graph] .dimmed,
+  svg[data-graph] [data-edge],
+  svg[data-graph] [data-node] {
+    transition: opacity 140ms linear;
+  }
+</style>
+
+<script>
+  // 배치는 빌드 시점에 이미 끝났다. 여기서는 인접 관계 강조만 한다.
+  const svg = document.querySelector<SVGSVGElement>('svg[data-graph]');
+  if (svg) {
+    const nodes = [...svg.querySelectorAll<SVGGElement>('[data-node]')];
+    const edges = [...svg.querySelectorAll<SVGLineElement>('[data-edge]')];
+
+    const clear = () => {
+      svg.classList.remove('is-focusing');
+      for (const el of [...nodes, ...edges]) el.classList.remove('dimmed');
+    };
+
+    const focus = (id: string, neighbors: Set<string>) => {
+      svg.classList.add('is-focusing');
+      for (const node of nodes) {
+        const nid = node.dataset.node ?? '';
+        node.classList.toggle('dimmed', nid !== id && !neighbors.has(nid));
+      }
+      for (const edge of edges) {
+        const touches = edge.dataset.a === id || edge.dataset.b === id;
+        edge.classList.toggle('dimmed', !touches);
+      }
+    };
+
+    for (const node of nodes) {
+      const id = node.dataset.node ?? '';
+      const neighbors = new Set((node.dataset.neighbors ?? '').split(' ').filter(Boolean));
+      node.addEventListener('mouseenter', () => focus(id, neighbors));
+      node.addEventListener('focus', () => focus(id, neighbors));
+      node.addEventListener('mouseleave', clear);
+      node.addEventListener('blur', clear);
+    }
+  }
+</script>

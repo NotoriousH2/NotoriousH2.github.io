@@ -1,0 +1,23 @@
+---
+import { TAGS, type TagId } from '../data/taxonomy';
+
+interface Props {
+  tag: TagId;
+  count?: number;
+}
+
+const { tag, count } = Astro.props;
+const meta = TAGS[tag];
+---
+
+<a class="tag" href={`/tags/${tag}`} style={`--tag-color: var(--cat-${meta.category})`}>
+  {meta.label}{count !== undefined && <span class="tag__count">{count}</span>}
+</a>
+
+<style>
+  .tag__count {
+    margin-left: 0.35em;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

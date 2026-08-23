@@ -1,0 +1,53 @@
+---
+import { LINKS, SITE } from '../consts';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-foot">
+  <div class="shell site-foot__inner">
+    <p class="meter meter--faint">{SITE.author} · {year}</p>
+    <ul>
+      {
+        LINKS.map((link) => (
+          <li>
+            <a class="meter" href={link.href}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-foot {
+    border-top: 1px solid var(--line);
+    padding-block: 1.5rem 2.5rem;
+  }
+
+  .site-foot__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  ul {
+    display: flex;
+    gap: 1.1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a:hover {
+    color: var(--text);
+  }
+</style>

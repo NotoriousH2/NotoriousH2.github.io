@@ -1,0 +1,98 @@
+---
+import { SITE } from '../consts';
+
+const NAV = [
+  { href: '/archive', label: '아카이브' },
+  { href: '/graph', label: '그래프' },
+  { href: '/about', label: '소개' },
+];
+
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => here === href || here.startsWith(`${href}/`);
+---
+
+<header class="site-head">
+  <div class="shell site-head__inner">
+    <a class="wordmark" href="/" aria-label={`${SITE.title} 홈`}>
+      <span class="wordmark__dot" aria-hidden="true"></span>
+      <span class="wordmark__text">notolab</span>
+    </a>
+
+    <nav aria-label="주요">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={['nav-link', { 'is-current': isCurrent(item.href) }]}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-head {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-head__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-family: var(--font-meter);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .wordmark__dot {
+    width: 0.46rem;
+    height: 0.46rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  nav ul {
+    display: flex;
+    gap: clamp(0.9rem, 3vw, 1.6rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    font-family: var(--font-meter);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding-block: 0.2rem;
+    border-bottom: 1px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+  }
+
+  .nav-link.is-current {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+</style>

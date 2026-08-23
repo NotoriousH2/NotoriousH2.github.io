@@ -1,0 +1,413 @@
+/*
+  시각 시스템
+  - 바탕은 무채색. 구획은 여백과 헤어라인으로만 한다.
+  - 색은 수치, 링크, 구조선, 범주 표시에만 쓴다. 넓은 면에는 칠하지 않는다.
+  - 범주 색은 hue만 다르다. 명도(--cat-l)와 채도(--cat-c)를 공유하므로
+    특정 노드만 튀는 일이 생기지 않는다. 액센트는 이 팔레트 안에서 고른다.
+*/
+
+:root {
+  color-scheme: light dark;
+
+  /* 무채색 바탕 */
+  --bg: oklch(0.992 0 0);
+  --bg-sunken: oklch(0.968 0 0);
+  --text: oklch(0.235 0 0);
+  --text-muted: oklch(0.495 0 0);
+  --text-faint: oklch(0.625 0 0);
+  --line: oklch(0.895 0 0);
+  --line-strong: oklch(0.795 0 0);
+  --selection: oklch(0.9 0.045 262);
+
+  /* 범주 팔레트: 명도·채도 고정, hue만 변수 */
+  --cat-l: 0.53;
+  --cat-c: 0.135;
+  --cat-models: oklch(var(--cat-l) var(--cat-c) 262);
+  --cat-build: oklch(var(--cat-l) var(--cat-c) 150);
+  --cat-industry: oklch(var(--cat-l) var(--cat-c) 42);
+  --cat-data: oklch(var(--cat-l) var(--cat-c) 318);
+  --cat-teaching: oklch(var(--cat-l) var(--cat-c) 205);
+  --accent: var(--cat-models);
+
+  /* 서체: 제목과 데이터는 IBM Plex, 본문은 Pretendard.
+     IBM Plex에는 한글이 없으므로 한글 글자는 자연히 Pretendard로 떨어진다. */
+  --font-body: Pretendard, var(--font-display), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-display), Pretendard, system-ui, sans-serif;
+  --font-meter: var(--font-mono);
+
+  --measure: 42rem;
+  --gutter: clamp(1.25rem, 5vw, 2rem);
+  --rhythm: clamp(3rem, 7vw, 4.5rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: oklch(0.205 0 0);
+    --bg-sunken: oklch(0.248 0 0);
+    --text: oklch(0.916 0 0);
+    --text-muted: oklch(0.688 0 0);
+    --text-faint: oklch(0.552 0 0);
+    --line: oklch(0.325 0 0);
+    --line-strong: oklch(0.425 0 0);
+    --selection: oklch(0.36 0.06 262);
+
+    --cat-l: 0.755;
+    --cat-c: 0.115;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  /* 한글 가독성: 어절 단위로 줄을 바꾼다. */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: var(--rhythm) 0;
+}
+
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── 골격: 모바일까지 단일 컬럼을 유지한다 ─────────────────────────── */
+
+.shell {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+main {
+  display: block;
+  padding-block: clamp(2.5rem, 6vw, 4rem) var(--rhythm);
+}
+
+/* ── 계측기: 날짜·태그·수치·스펙은 전부 모노스페이스 ────────────────── */
+
+.meter {
+  font-family: var(--font-meter);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.meter--faint {
+  color: var(--text-faint);
+}
+
+/* ── 섹션 제목: 헤어라인 위에 얹은 작은 라벨 ────────────────────────── */
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: 0.25rem;
+}
+
+.section-head h2 {
+  font-family: var(--font-meter);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* ── 범주 표시 ─────────────────────────────────────────────────────── */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-meter);
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  color: var(--text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tag::before {
+  content: '';
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: var(--tag-color, var(--text-faint));
+  flex: none;
+}
+
+.tag:hover {
+  color: var(--text);
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+}
+
+/* ── 본문 조판 ─────────────────────────────────────────────────────── */
+
+.prose {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+
+.prose > * + * {
+  margin-top: 1.15em;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  margin-top: 2.6em;
+  margin-bottom: 0.2em;
+  scroll-margin-top: 2rem;
+}
+
+.prose h1 {
+  font-size: 1.45rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.prose h2 {
+  font-size: 1.22rem;
+}
+
+.prose h3 {
+  font-size: 1.08rem;
+}
+
+.prose h1 + *,
+.prose h2 + *,
+.prose h3 + * {
+  margin-top: 0.9em;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration-color: color-mix(in oklch, var(--accent) 45%, transparent);
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.3em;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-left: 1.1em;
+  border-left: 2px solid var(--line-strong);
+  color: var(--text-muted);
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.08em 0.32em;
+}
+
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow-x: auto;
+  background: var(--bg-sunken) !important;
+}
+
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose hr {
+  margin: 2.4em 0;
+}
+
+.prose figure {
+  margin: 1.8em 0;
+  text-align: center;
+}
+
+.prose figcaption {
+  font-family: var(--font-meter);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--text-faint);
+  margin-top: 0.6em;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+.prose th,
+.prose td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.5em 0.6em;
+  text-align: left;
+}
+
+.prose th {
+  font-family: var(--font-meter);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.prose td:not(:first-child) {
+  font-family: var(--font-meter);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 이전 글에서 쓰던 폭 지정 클래스 유지 */
+.responsive-image-50 { width: min(100%, 48%); }
+.responsive-image-70 { width: min(100%, 70%); }
+.responsive-image-90 { width: min(100%, 90%); }
+
+@media (max-width: 34rem) {
+  .responsive-image-50 { width: 100%; }
+}
+
+/* ── 모션: 로드 시 한 번뿐. 스크롤에 반응하는 요소는 만들지 않는다 ──── */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 스크린리더 전용 */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -3rem;
+  z-index: 10;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  padding: 0.45rem 0.8rem;
+  font-family: var(--font-meter);
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: top 120ms ease;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}

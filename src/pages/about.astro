@@ -1,0 +1,357 @@
+---
+import { CONTACT, SITE } from '../consts';
+import { CORPORATE, LECTURES } from '../data/lectures';
+import { TALK_CHANNEL, TALKS } from '../data/talks';
+import { CATEGORIES } from '../data/taxonomy';
+import { TOOLS } from '../data/tools';
+import Base from '../layouts/Base.astro';
+import { categoryUsage, getPosts } from '../lib/posts';
+
+const posts = await getPosts();
+const byCategory = categoryUsage(posts);
+
+// '다루는 주제'는 이 페이지의 범례 역할도 한다. 글뿐 아니라 강의·발표에 쓰인 범주까지
+// 합쳐야, 아래 목록의 점 색이 무엇을 뜻하는지 같은 화면 안에서 설명된다.
+const usedIds = new Set([
+  ...byCategory.keys(),
+  ...LECTURES.map((l) => l.category),
+  ...TALKS.map((t) => t.category),
+]);
+const activeCategories = CATEGORIES.filter((c) => usedIds.has(c.id));
+
+// 강의는 '어디서 들을 수 있는가'로 묶는다. 범주는 항목마다 점으로 붙어 축을 공유한다.
+const lectureGroups = [...new Set(LECTURES.map((l) => `${l.provider} · ${l.format}`))].map((key) => ({
+  key,
+  items: LECTURES.filter((l) => `${l.provider} · ${l.format}` === key),
+}));
+
+const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label ?? id;
+---
+
+<Base title="소개" description={SITE.description}>
+  <div class="section-head">
+    <h2>소개</h2>
+  </div>
+
+  <section class="bio">
+    <h1>{SITE.author}</h1>
+    <p>
+      노토랩({SITE.org}) 대표입니다. 기업과 연구소에서 LLM 파인튜닝, AI 에이전트, RAG를
+      주제로 강의하고, 새로 나온 기술을 실제 업무에 어떻게 얹을지 자문합니다.
+    </p>
+    <p>
+      KAIST 전산학부를 졸업하고 서울대학교 컴퓨터공학부에서 박사를 마쳤습니다. 그래프와
+      사용자 행동 데이터를 다루는 연구를 했습니다.
+    </p>
+    <p>
+      새 모델과 논문이 나오면 직접 돌려 보고 정리합니다. 짧은 것은 유튜브와 링크드인에,
+      길게 남길 것은 여기에 씁니다.
+    </p>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>연락</h2>
+    </div>
+    <dl class="specs">
+      {
+        CONTACT.map((item) => (
+          <div class="spec">
+            <dt class="meter meter--faint">{item.label}</dt>
+            <dd>
+              <a class="meter" href={item.href}>
+                {item.text}
+              </a>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  {
+    activeCategories.length > 0 && (
+      <section class="block">
+        <div class="section-head">
+          <h2>다루는 주제</h2>
+        </div>
+        <dl class="specs">
+          {activeCategories.map((category) => (
+            <div class="spec" style={`--tag-color: var(--cat-${category.id})`}>
+              <dt class="meter dot">
+                {byCategory.has(category.id) ? (
+                  <a href={`/categories/${category.id}`}>{category.label}</a>
+                ) : (
+                  category.label
+                )}
+              </dt>
+              <dd>
+                <span>{category.blurb}</span>
+                {byCategory.has(category.id) && (
+                  <span class="meter meter--faint">글 {byCategory.get(category.id)!.length}편</span>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+
+  {
+    LECTURES.length > 0 && (
+      <section class="block">
+        <div class="section-head">
+          <h2>강의</h2>
+          <span class="meter meter--faint">공개 {LECTURES.length}개</span>
+        </div>
+        {lectureGroups.map((group) => (
+          <div class="group">
+            <h3 class="meter group__label">{group.key}</h3>
+            <dl class="specs">
+              {group.items.map((lecture) => (
+                <div class="spec" style={`--tag-color: var(--cat-${lecture.category})`}>
+                  <dt class="meter dot">
+                    {lecture.year}
+                    <span class="visually-hidden">, 범주 {categoryLabel(lecture.category)}</span>
+                  </dt>
+                  <dd>
+                    <span class="item__title">
+                      <a href={lecture.href}>{lecture.title}</a>
+                    </span>
+                    {lecture.extra && (
+                      <span class="meter meter--faint">
+                        <a href={lecture.extra.href}>{lecture.extra.label} →</a>
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    CORPORATE.length > 0 && (
+      <section class="block">
+        <div class="section-head">
+          <h2>기업 · 기관 교육</h2>
+        </div>
+        <p class="note">
+          인하우스 교육이라 수강 링크는 없습니다. 파인튜닝(CPT · SFT · PEFT · DPO · GRPO),
+          에이전트와 컨텍스트 엔지니어링, RAG, 평가와 서빙을 주로 다룹니다.
+        </p>
+        <dl class="specs">
+          {CORPORATE.map((entry) => (
+            <div class="spec">
+              <dt class="meter meter--faint">{entry.year}</dt>
+              <dd>
+                <span class="orgs">{entry.orgs.join(' · ')}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+
+  {
+    TOOLS.length > 0 && (
+      <section class="block">
+        <div class="section-head">
+          <h2>도구</h2>
+          <span class="meter meter--faint">{TOOLS.length}개</span>
+        </div>
+        <dl class="specs">
+          {TOOLS.map((tool) => (
+            <div class="spec">
+              <dt class="meter meter--faint">{tool.kind}</dt>
+              <dd>
+                <span class="item__title">
+                  <a href={tool.href}>{tool.name}</a>
+                  {tool.repo && (
+                    <a class="meter meter--faint repo" href={tool.repo}>
+                      소스
+                    </a>
+                  )}
+                </span>
+                <span class="item__summary">{tool.summary}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+
+  {
+    TALKS.length > 0 && (
+      <section class="block">
+        <div class="section-head">
+          <h2>발표 · 영상</h2>
+          <span class="meter meter--faint">{TALKS.length}건</span>
+        </div>
+        <p class="note">
+          <a href={TALK_CHANNEL.href}>{TALK_CHANNEL.label}</a> — {TALK_CHANNEL.blurb}
+        </p>
+        <dl class="specs">
+          {TALKS.map((talk) => (
+            <div class="spec" style={`--tag-color: var(--cat-${talk.category})`}>
+              <dt class="meter dot">
+                {talk.date}
+                <span class="visually-hidden">, 범주 {categoryLabel(talk.category)}</span>
+              </dt>
+              <dd>
+                <span class="item__title">
+                  <a href={talk.href}>{talk.title}</a>
+                </span>
+                <span class="meter meter--faint">
+                  {talk.venue}
+                  {talk.slides && (
+                    <>
+                      <span class="sep" aria-hidden="true">/</span>
+                      <a href={talk.slides.href}>{talk.slides.label}</a>
+                    </>
+                  )}
+                </span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .bio h1 {
+    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
+    margin: 1.4rem 0 1.1rem;
+  }
+
+  .bio p {
+    margin: 0 0 0.9rem;
+    max-width: 34rem;
+  }
+
+  .block {
+    margin-top: var(--rhythm);
+  }
+
+  .note {
+    margin: 1rem 0 0;
+    max-width: 34rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
+  .group {
+    margin-top: 1.8rem;
+  }
+
+  .group__label {
+    font-size: 0.76rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-faint);
+    margin-bottom: 0.4rem;
+  }
+
+  .specs {
+    margin: 1rem 0 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .group .specs {
+    margin-top: 0;
+  }
+
+  .spec {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0 1.25rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+
+  dt {
+    color: var(--text);
+  }
+
+  dt a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .dot {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    color: var(--text-muted);
+  }
+
+  .dot::before {
+    content: '';
+    width: 0.46em;
+    height: 0.46em;
+    border-radius: 50%;
+    background: var(--tag-color);
+    flex: none;
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  dd a:hover {
+    color: var(--accent);
+  }
+
+  .item__title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .item__title a {
+    text-decoration-color: var(--line-strong);
+  }
+
+  .repo {
+    font-weight: 400;
+  }
+
+  .item__summary {
+    color: var(--text-muted);
+  }
+
+  .orgs {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .sep {
+    color: var(--line-strong);
+    margin-inline: 0.45em;
+  }
+
+  @media (max-width: 32rem) {
+    .spec {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+</style>

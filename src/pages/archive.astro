@@ -1,0 +1,109 @@
+---
+import PostList from '../components/PostList.astro';
+import { CATEGORIES } from '../data/taxonomy';
+import Base from '../layouts/Base.astro';
+import { categoryUsage, getPosts, groupByYear } from '../lib/posts';
+
+const posts = await getPosts();
+const years = groupByYear(posts);
+const byCategory = categoryUsage(posts);
+const filters = CATEGORIES.filter((c) => byCategory.has(c.id));
+---
+
+<Base title="아카이브" description="지금까지 쓴 글 전체. 연도순으로 묶었습니다.">
+  <div class="section-head">
+    <h2>아카이브</h2>
+    <span class="meter meter--faint">{posts.length}편</span>
+  </div>
+
+  {
+    filters.length > 0 && (
+      <nav class="filters" aria-label="범주 필터">
+        <span class="meter meter--faint">범주</span>
+        <ul>
+          {filters.map((category) => (
+            <li style={`--tag-color: var(--cat-${category.id})`}>
+              <a class="meter" href={`/categories/${category.id}`}>
+                {category.label}
+                <span class="count">{byCategory.get(category.id)!.length}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+
+  {
+    years.length > 0 ? (
+      years.map((group) => (
+        <section class="year">
+          <h3 class="meter year__label">{group.year}</h3>
+          <PostList posts={group.posts} dateFormat="short" />
+        </section>
+      ))
+    ) : (
+      <p class="meter">아직 올린 글이 없습니다.</p>
+    )
+  }
+</Base>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .filters ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .filters li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+  }
+
+  .filters li::before {
+    content: '';
+    width: 0.42em;
+    height: 0.42em;
+    border-radius: 50%;
+    background: var(--tag-color);
+  }
+
+  .filters a {
+    text-decoration: none;
+  }
+
+  .filters a:hover {
+    color: var(--text);
+  }
+
+  .count {
+    margin-left: 0.4em;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .year {
+    margin-top: 2.6rem;
+  }
+
+  .year__label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin-bottom: 0.5rem;
+  }
+</style>

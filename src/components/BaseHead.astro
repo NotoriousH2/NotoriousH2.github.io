@@ -1,0 +1,60 @@
+---
+import { Font } from 'astro:assets';
+
+import { SITE } from '../consts';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** 글 페이지에서만 article로 바꾼다. */
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+}
+
+const { title, description = SITE.description, type = 'website', publishedTime } = Astro.props;
+
+const fullTitle = title === SITE.title ? `${SITE.title} — ${SITE.description}` : `${title} · ${SITE.title}`;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" title={SITE.title} href={new URL('/feed.xml', Astro.site)} />
+
+<!-- 제목·수치용. 라틴 글리프만 쓰므로 자체 호스팅해도 가볍다. -->
+<Font cssVariable="--font-display" preload />
+<Font cssVariable="--font-mono" preload />
+
+<!--
+  본문용 Pretendard. 한글 동적 서브셋이라 실제로는 그 페이지에 쓰인 글자 조각만 내려온다.
+  전체를 자체 호스팅하면 오히려 전송량이 커진다.
+-->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+/>
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.title} />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />

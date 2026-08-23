@@ -1,0 +1,49 @@
+---
+import CategoryTagList from '../components/CategoryTagList.astro';
+import TagGraph from '../components/TagGraph.astro';
+import Base from '../layouts/Base.astro';
+import { buildGraph } from '../lib/graph';
+import { getPosts, tagUsage } from '../lib/posts';
+
+const posts = await getPosts();
+const graph = buildGraph(posts);
+const usage = new Map([...tagUsage(posts).entries()].map(([tag, tagged]) => [tag, tagged.length]));
+---
+
+<Base
+  title="주제 지도"
+  description="태그를 나열하는 대신 관계로 보여줍니다. 노드는 태그, 크기는 글 수, 선은 같은 글에 함께 등장한 빈도입니다."
+>
+  <div class="section-head">
+    <h2>주제 지도</h2>
+    <span class="meter meter--faint">태그 {graph.nodes.length}개</span>
+  </div>
+
+  <p class="lede">
+    태그를 목록으로 늘어놓으면 개수만 보이고 관계는 보이지 않습니다. 여기서는 같은 글에 함께
+    등장한 태그를 선으로 잇고, 색으로 소속 범주를 표시합니다. 노드를 누르면 그 태그의 글 목록으로
+    들어갑니다.
+  </p>
+
+  <TagGraph graph={graph} />
+
+  <section class="fallback">
+    <div class="section-head">
+      <h2>범주별 태그</h2>
+    </div>
+    <CategoryTagList usage={usage} />
+  </section>
+</Base>
+
+<style>
+  .lede {
+    margin: 1.2rem 0 1.8rem;
+    max-width: 38rem;
+    color: var(--text-muted);
+    font-size: 0.97rem;
+  }
+
+  .fallback {
+    margin-top: var(--rhythm);
+  }
+</style>

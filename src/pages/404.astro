@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="404" description="요청한 페이지를 찾을 수 없습니다.">
+  <div class="section-head">
+    <h2>404</h2>
+  </div>
+  <div class="body">
+    <h1>페이지를 찾을 수 없습니다</h1>
+    <p>주소가 바뀌었거나, 애초에 없는 글입니다.</p>
+    <p class="meter">
+      <a href="/">홈</a>
+      <span aria-hidden="true">/</span>
+      <a href="/archive">아카이브</a>
+      <span aria-hidden="true">/</span>
+      <a href="/graph">주제 지도</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .body {
+    margin-top: 2rem;
+  }
+
+  h1 {
+    font-size: clamp(1.4rem, 1.1rem + 1.4vw, 1.8rem);
+  }
+
+  p {
+    margin: 0.9rem 0 0;
+    color: var(--text-muted);
+  }
+
+  .meter {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+
+  .meter span {
+    color: var(--line-strong);
+  }
+</style>

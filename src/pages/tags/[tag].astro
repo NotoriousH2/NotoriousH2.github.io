@@ -1,0 +1,125 @@
+---
+import PostList from '../../components/PostList.astro';
+import TagLink from '../../components/TagLink.astro';
+import { TAGS, getCategory, type TagId } from '../../data/taxonomy';
+import Base from '../../layouts/Base.astro';
+import { getPosts, tagUsage, type Post } from '../../lib/posts';
+
+/** 글이 실제로 붙어 있는 태그만 페이지를 만든다. 빈 페이지를 남기지 않는다. */
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const usage = tagUsage(posts);
+  return [...usage.entries()].map(([tag, tagged]) => ({
+    params: { tag },
+    props: { tag, posts: tagged },
+  }));
+}
+
+interface Props {
+  tag: TagId;
+  posts: Post[];
+}
+
+const { tag, posts } = Astro.props;
+const meta = TAGS[tag];
+const category = getCategory(meta.category);
+
+// 같은 글에 함께 등장한 다른 태그들.
+const neighbors = new Map<TagId, number>();
+for (const post of posts) {
+  for (const raw of post.data.tags) {
+    const other = raw as TagId;
+    if (other === tag) continue;
+    neighbors.set(other, (neighbors.get(other) ?? 0) + 1);
+  }
+}
+const related = [...neighbors.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+---
+
+<Base title={meta.label} description={`${meta.label} 태그가 붙은 글 ${posts.length}편.`}>
+  <div class="section-head">
+    <h2>태그</h2>
+    <span class="meter meter--faint">{posts.length}편</span>
+  </div>
+
+  <header class="head" style={`--tag-color: var(--cat-${meta.category})`}>
+    <h1>{meta.label}</h1>
+    <p class="meter">
+      <a class="cat" href={`/categories/${category.id}`}>{category.label}</a>
+    </p>
+  </header>
+
+  <PostList posts={posts} />
+
+  {
+    related.length > 0 && (
+      <section class="related">
+        <div class="section-head">
+          <h2>함께 등장한 태그</h2>
+        </div>
+        <div class="tag-row">
+          {related.map(([other, count]) => (
+            <TagLink tag={other} count={count} />
+          ))}
+        </div>
+        <p class="meter meter--faint note">
+          <a href="/graph">주제 지도에서 전체 관계 보기 →</a>
+        </p>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .head {
+    margin: 1.4rem 0 2rem;
+  }
+
+  .head h1 {
+    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
+  }
+
+  .head p {
+    margin: 0.5rem 0 0;
+  }
+
+  .cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    text-decoration: none;
+    color: var(--text-muted);
+  }
+
+  .cat::before {
+    content: '';
+    width: 0.46em;
+    height: 0.46em;
+    border-radius: 50%;
+    background: var(--tag-color);
+  }
+
+  .cat:hover {
+    color: var(--text);
+  }
+
+  .related {
+    margin-top: var(--rhythm);
+  }
+
+  .related .tag-row {
+    padding-block: 1rem;
+  }
+
+  .note {
+    margin: 0;
+  }
+
+  .note a {
+    text-decoration: none;
+  }
+
+  .note a:hover {
+    color: var(--text);
+  }
+</style>

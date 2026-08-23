@@ -1,0 +1,86 @@
+---
+import type { Post } from '../lib/posts';
+import { formatDate, formatYearMonth, postPath } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  /** 아카이브처럼 연도로 이미 묶인 목록에서는 월·일만 보여준다. */
+  dateFormat?: 'full' | 'short';
+}
+
+const { post, dateFormat = 'full' } = Astro.props;
+const date = dateFormat === 'short' ? formatYearMonth(post.data.pubDate) : formatDate(post.data.pubDate);
+---
+
+<li class="row">
+  <a class="row__link" href={postPath(post)}>
+    <time class="meter row__date" datetime={post.data.pubDate.toISOString()}>{date}</time>
+    <span class="row__body">
+      <span class="row__title">{post.data.title}</span>
+      <span class="row__summary">{post.data.summary}</span>
+    </span>
+  </a>
+</li>
+
+<style>
+  .row {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .row__link {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0 1.25rem;
+    align-items: baseline;
+    padding-block: 1rem;
+    text-decoration: none;
+  }
+
+  .row__date {
+    color: var(--text-faint);
+    padding-top: 0.28rem;
+  }
+
+  .row__body {
+    display: block;
+    min-width: 0;
+  }
+
+  .row__title {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.02rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .row__summary {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .row__link:hover .row__title {
+    color: var(--accent);
+  }
+
+  .row__link:hover .row__date {
+    color: var(--text-muted);
+  }
+
+  /* 모바일에서도 단일 컬럼. 날짜를 제목 위로 올린다. */
+  @media (max-width: 32rem) {
+    .row__link {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+
+    .row__date {
+      padding-top: 0;
+    }
+  }
+</style>

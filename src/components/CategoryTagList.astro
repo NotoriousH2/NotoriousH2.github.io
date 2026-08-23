@@ -1,0 +1,86 @@
+---
+import { CATEGORIES, TAGS, type TagId } from '../data/taxonomy';
+import TagLink from './TagLink.astro';
+
+interface Props {
+  /** 태그 -> 글 수. 글이 붙지 않은 태그는 넘기지 않는다. */
+  usage: Map<TagId, number>;
+}
+
+const { usage } = Astro.props;
+
+const groups = CATEGORIES.map((category) => ({
+  category,
+  tags: [...usage.entries()]
+    .filter(([tag]) => TAGS[tag].category === category.id)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])),
+})).filter((group) => group.tags.length > 0);
+---
+
+<dl class="taxonomy">
+  {
+    groups.map(({ category, tags }) => (
+      <div class="taxonomy__group">
+        <dt style={`--tag-color: var(--cat-${category.id})`}>
+          <a class="meter" href={`/categories/${category.id}`}>
+            {category.label}
+          </a>
+        </dt>
+        <dd>
+          <div class="tag-row">
+            {tags.map(([tag, count]) => (
+              <TagLink tag={tag} count={count} />
+            ))}
+          </div>
+        </dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .taxonomy {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .taxonomy__group {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0 1.25rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+  }
+
+  dt::before {
+    content: '';
+    width: 0.46em;
+    height: 0.46em;
+    border-radius: 50%;
+    background: var(--tag-color);
+    flex: none;
+  }
+
+  dt a {
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  @media (max-width: 32rem) {
+    .taxonomy__group {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

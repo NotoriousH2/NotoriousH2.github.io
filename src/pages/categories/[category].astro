@@ -1,0 +1,81 @@
+---
+import CategoryTagList from '../../components/CategoryTagList.astro';
+import PostList from '../../components/PostList.astro';
+import { TAGS, getCategory, type CategoryId, type TagId } from '../../data/taxonomy';
+import Base from '../../layouts/Base.astro';
+import { categoryUsage, getPosts, type Post } from '../../lib/posts';
+
+/** 글이 있는 범주만 페이지를 만든다. */
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const usage = categoryUsage(posts);
+  return [...usage.entries()].map(([category, tagged]) => ({
+    params: { category },
+    props: { category, posts: tagged },
+  }));
+}
+
+interface Props {
+  category: CategoryId;
+  posts: Post[];
+}
+
+const { category: categoryId, posts } = Astro.props;
+const category = getCategory(categoryId);
+
+const usage = new Map<TagId, number>();
+for (const post of posts) {
+  for (const raw of post.data.tags) {
+    const tag = raw as TagId;
+    if (TAGS[tag].category !== categoryId) continue;
+    usage.set(tag, (usage.get(tag) ?? 0) + 1);
+  }
+}
+---
+
+<Base title={category.label} description={category.blurb}>
+  <div class="section-head">
+    <h2>범주</h2>
+    <span class="meter meter--faint">{posts.length}편</span>
+  </div>
+
+  <header class="head" style={`--tag-color: var(--cat-${categoryId})`}>
+    <h1>{category.label}</h1>
+    <p>{category.blurb}</p>
+  </header>
+
+  <PostList posts={posts} />
+
+  {
+    usage.size > 0 && (
+      <section class="tags">
+        <div class="section-head">
+          <h2>이 범주의 태그</h2>
+        </div>
+        <CategoryTagList usage={usage} />
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .head {
+    margin: 1.4rem 0 2rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--tag-color);
+  }
+
+  .head h1 {
+    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
+  }
+
+  .head p {
+    margin: 0.55rem 0 0;
+    color: var(--text-muted);
+    max-width: 32rem;
+  }
+
+  .tags {
+    margin-top: var(--rhythm);
+  }
+</style>

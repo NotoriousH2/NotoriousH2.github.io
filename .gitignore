@@ -19,3 +19,7 @@ pnpm-debug.log*
 .DS_Store
 *.swp
 .vscode/
+
+# 에이전트 작업 지침 — 저장소에 올리지 않는다
+CLAUDE.md
+CLAUDE.*.md

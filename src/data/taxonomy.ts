@@ -22,11 +22,11 @@ export interface Category {
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'models', label: '모델', blurb: '언어 모델 자체의 구조와 성능, 그리고 그 성능을 재는 방법.', hue: 262 },
-  { id: 'build', label: '구축', blurb: '모델을 실제 동작하는 물건으로 만드는 과정.', hue: 150 },
-  { id: 'industry', label: '산업', blurb: '모델을 만드는 조직과 그들이 움직이는 방향.', hue: 42 },
-  { id: 'data', label: '데이터', blurb: '입력이 되는 데이터와, 결과를 읽어내는 방법.', hue: 318 },
-  { id: 'teaching', label: '교육', blurb: '강의에서 다루는 내용과 입문자를 위한 정리.', hue: 205 },
+  { id: 'models', label: '모델', blurb: '모델의 구조와 성능, 그리고 그 성능을 재는 방법.', hue: 262 },
+  { id: 'build', label: '구축', blurb: '파인튜닝, RAG, 에이전트 — 모델을 돌아가는 시스템으로 만드는 일.', hue: 150 },
+  { id: 'industry', label: '산업', blurb: '모델을 만들어 내놓는 회사들과 그 발표.', hue: 42 },
+  { id: 'data', label: '데이터', blurb: '학습과 평가에 쓰는 데이터, 그리고 결과를 읽는 방법.', hue: 318 },
+  { id: 'teaching', label: '교육', blurb: '강의에서 다루는 내용과 입문용 정리.', hue: 205 },
 ] as const;
 
 export interface Tag {

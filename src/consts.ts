@@ -2,7 +2,7 @@ export const SITE = {
   url: 'https://notorioush2.github.io',
   title: 'NotoLab',
   /** 브라우저 탭·OG에 쓰는 한 줄 정의. 세 문단 소개는 홈에서 따로 다룬다. */
-  description: 'LLM 파인튜닝, AI 에이전트, RAG를 강의하고 자문합니다. 읽은 것과 직접 돌려 본 것을 정리해 둡니다.',
+  description: '노토랩 변형호. 기업과 연구소에서 LLM 파인튜닝, AI 에이전트, RAG를 강의하고 자문합니다.',
   author: '변형호 (Hyungho Byun)',
   authorEn: 'Hyungho Byun',
   org: 'NotoLAB',

@@ -10,13 +10,12 @@ const byCategory = categoryUsage(posts);
 const filters = CATEGORIES.filter((c) => byCategory.has(c.id));
 ---
 
-<Base title="아카이브" description="지금까지 쓴 글 전체. 연도순으로 묶었습니다.">
+<Base title="아카이브" description="연도순으로 묶은 글 전체 목록.">
   <header class="page-head">
     <p class="page-head__eyebrow">
-      <span class="meter">아카이브</span>
       <span class="meter meter--faint">{posts.length}편</span>
     </p>
-    <h1>지금까지 쓴 글</h1>
+    <h1>아카이브</h1>
   </header>
 
   {

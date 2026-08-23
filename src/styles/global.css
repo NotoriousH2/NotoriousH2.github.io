@@ -183,6 +183,14 @@ main {
   margin: 0 0 0.7rem;
 }
 
+/*
+  왼쪽 라벨은 h1과 뜻이 겹치지 않을 때만 넣는다(태그/범주처럼 '종류 + 이름'인 경우).
+  라벨이 없으면 수치만 남아 오른쪽에 붙는다.
+*/
+.page-head__eyebrow > :last-child {
+  margin-left: auto;
+}
+
 .page-head h1 {
   margin: 0;
 }

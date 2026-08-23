@@ -18,7 +18,7 @@ export interface Talk {
 export const TALK_CHANNEL = {
   label: 'YouTube · SudoRemove',
   href: 'https://www.youtube.com/@sudoremove',
-  blurb: '새 모델과 논문이 나오면 직접 읽고 정리해 올리는 채널.',
+  blurb: '논문과 신규 모델 리뷰를 올립니다.',
 };
 
 export const TALKS: Talk[] = [

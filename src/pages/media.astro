@@ -5,9 +5,6 @@ import Base from '../layouts/Base.astro';
 
 const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label ?? id;
 
-// 코멘트가 하나도 없으면 그것을 예고하는 문장도 쓰지 않는다.
-const hasNotes = TALKS.some((talk) => talk.note);
-
 // 이 화면에 실제로 점이 찍히는 범주만 범례에 올린다.
 const usedCategories = CATEGORIES.filter((c) => TALKS.some((t) => t.category === c.id));
 ---
@@ -21,10 +18,7 @@ const usedCategories = CATEGORIES.filter((c) => TALKS.some((t) => t.category ===
       <span class="meter meter--faint">{TALKS.length}건</span>
     </p>
     <h1>미디어</h1>
-    <p class="page-head__lede">
-      남이 여는 자리에 나가서 이야기한 것들. 영상이 있으면 영상으로, 없으면 발표 자료로
-      연결됩니다.{hasNotes && ' 지금 다시 보면 달라진 부분은 항목 아래에 따로 적어 두었습니다.'}
-    </p>
+    <p class="page-head__lede">영상과 발표자료</p>
     <ul class="legend">
       {
         usedCategories.map((category) => (

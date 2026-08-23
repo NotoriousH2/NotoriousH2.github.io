@@ -19,9 +19,7 @@ const usage = new Map([...tagUsage(posts).entries()].map(([tag, tagged]) => [tag
       <span class="meter meter--faint">태그 {graph.nodes.length}개</span>
     </p>
     <h1>주제 지도</h1>
-    <p class="page-head__lede">
-      같은 글에 함께 나온 태그를 선으로 이었습니다. 노드를 누르면 그 태그의 글 목록으로 갑니다.
-    </p>
+    <p class="page-head__lede">노드를 누르면 해당 태그의 글 목록으로 연결됩니다.</p>
   </header>
 
   <TagGraph graph={graph} />

@@ -7,9 +7,15 @@
  *  3. 내비게이션·아카이브 필터·지식 그래프·강의 소개가 전부 이 축을 공유한다.
  *  4. 색은 hue 하나만 다르다. 명도(L)와 채도(C)는 global.css의 --cat-l / --cat-c로 고정돼
  *     있어서, 특정 범주만 눈에 튀는 일이 구조적으로 생기지 않는다.
+ *
+ * 축을 이렇게 가른 이유
+ *  모델을 원하는 대로 움직이게 만드는 방법은 크게 둘로 갈린다. 가중치를 건드리거나
+ *  (tuning), 입력을 건드리거나(context). 강의 커리큘럼도 이 선을 따라 나뉘어 있다.
+ *  거기에 대상인 모델 자체(models), 결과를 재고 굴리는 일(ops), 모델을 내놓는
+ *  바깥 세계(industry)를 더해 다섯이 된다.
  */
 
-export const CATEGORY_IDS = ['models', 'build', 'industry', 'data', 'teaching'] as const;
+export const CATEGORY_IDS = ['models', 'tuning', 'context', 'ops', 'industry'] as const;
 export type CategoryId = (typeof CATEGORY_IDS)[number];
 
 export interface Category {
@@ -22,11 +28,11 @@ export interface Category {
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'models', label: '모델', blurb: '모델의 구조와 성능, 그리고 그 성능을 재는 방법.', hue: 262 },
-  { id: 'build', label: '구축', blurb: '파인튜닝, RAG, 에이전트 — 모델을 돌아가는 시스템으로 만드는 일.', hue: 150 },
+  { id: 'models', label: '모델', blurb: '모델의 구조와 성능, 그리고 그 차이가 어디서 오는지.', hue: 262 },
+  { id: 'tuning', label: '파인튜닝', blurb: '가중치를 학습시켜 모델 자체를 바꾸는 일.', hue: 150 },
+  { id: 'context', label: '컨텍스트', blurb: '학습하지 않고 입력 쪽에서 성능을 끌어내는 일.', hue: 318 },
+  { id: 'ops', label: '평가·운영', blurb: '성능을 재고, 돌리고, 비용을 맞추는 일.', hue: 205 },
   { id: 'industry', label: '산업', blurb: '모델을 만들어 내놓는 회사들과 그 발표.', hue: 42 },
-  { id: 'data', label: '데이터', blurb: '학습과 평가에 쓰는 데이터, 그리고 결과를 읽는 방법.', hue: 318 },
-  { id: 'teaching', label: '교육', blurb: '강의에서 다루는 내용과 입문용 정리.', hue: 205 },
 ] as const;
 
 export interface Tag {
@@ -39,37 +45,50 @@ export interface Tag {
  * 표시되는 구조물은 전부 이 표에서 나오므로, 새 주제를 쓰려면 먼저 여기에 자리를 만든다.
  */
 export const TAGS = {
-  // 모델
+  // 모델 — 무엇을 다루는가
   llm: { label: 'LLM', category: 'models' },
-  evaluation: { label: '평가', category: 'models' },
-  benchmark: { label: '벤치마크', category: 'models' },
   'open-model': { label: '오픈 모델', category: 'models' },
+  reasoning: { label: '추론 모델', category: 'models' },
+  moe: { label: 'MoE', category: 'models' },
+  'long-context': { label: '롱 컨텍스트', category: 'models' },
+  multimodal: { label: '멀티모달', category: 'models' },
   solar: { label: 'Solar', category: 'models' },
   gpt: { label: 'GPT', category: 'models' },
-  multimodal: { label: '멀티모달', category: 'models' },
 
-  // 구축
-  rag: { label: 'RAG', category: 'build' },
-  agent: { label: '에이전트', category: 'build' },
-  'fine-tuning': { label: '파인튜닝', category: 'build' },
-  prompt: { label: '프롬프트', category: 'build' },
-  api: { label: 'API', category: 'build' },
+  // 파인튜닝 — 가중치를 건드린다
+  cpt: { label: 'CPT', category: 'tuning' },
+  sft: { label: 'SFT', category: 'tuning' },
+  peft: { label: 'PEFT', category: 'tuning' },
+  lora: { label: 'LoRA', category: 'tuning' },
+  dpo: { label: 'DPO', category: 'tuning' },
+  grpo: { label: 'GRPO', category: 'tuning' },
+  'synthetic-data': { label: '합성 데이터', category: 'tuning' },
+  sllm: { label: 'sLLM', category: 'tuning' },
 
-  // 산업
+  // 컨텍스트 — 입력을 건드린다
+  rag: { label: 'RAG', category: 'context' },
+  agent: { label: '에이전트', category: 'context' },
+  langgraph: { label: 'LangGraph', category: 'context' },
+  mcp: { label: 'MCP', category: 'context' },
+  memory: { label: '메모리', category: 'context' },
+  skills: { label: '스킬', category: 'context' },
+  prompt: { label: '프롬프트', category: 'context' },
+  'tool-calling': { label: '툴 콜링', category: 'context' },
+
+  // 평가·운영 — 재고 굴린다
+  evaluation: { label: '평가', category: 'ops' },
+  benchmark: { label: '벤치마크', category: 'ops' },
+  serving: { label: '서빙', category: 'ops' },
+  vllm: { label: 'vLLM', category: 'ops' },
+  tracing: { label: '트레이싱', category: 'ops' },
+  cost: { label: '비용', category: 'ops' },
+
+  // 산업 — 바깥에서 벌어지는 일
   news: { label: '뉴스', category: 'industry' },
   openai: { label: 'OpenAI', category: 'industry' },
   upstage: { label: '업스테이지', category: 'industry' },
   huggingface: { label: '허깅페이스', category: 'industry' },
   policy: { label: '정책', category: 'industry' },
-
-  // 데이터
-  analysis: { label: '데이터 분석', category: 'data' },
-  visualization: { label: '시각화', category: 'data' },
-  dataset: { label: '데이터셋', category: 'data' },
-
-  // 교육
-  lecture: { label: '강의', category: 'teaching' },
-  'getting-started': { label: '입문', category: 'teaching' },
 } as const satisfies Record<string, Tag>;
 
 export type TagId = keyof typeof TAGS;

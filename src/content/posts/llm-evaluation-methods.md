@@ -3,14 +3,14 @@ title: 업스테이지의 1위 모델은 얼마나 대단한 것일까? 거대 �
 summary: 허깅페이스 리더보드의 6개 벤치마크, LLM Arena, GPT-4를 심판으로 쓰는 평가법을 차례로 뜯어봅니다.
 pubDate: 2024-01-11
 tags:
-  - llm
   - evaluation
   - benchmark
+  - llm
   - open-model
   - solar
+  - gpt
   - huggingface
   - upstage
-  - gpt
 ---
 
 강의를 진행하다 보면 **"어떤 오픈소스 LLM 모델을 써야 하나요?"** 라는 질문을 많이 듣습니다. 

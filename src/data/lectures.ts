@@ -33,7 +33,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '오프라인',
     year: 2026,
-    category: 'build',
+    category: 'tuning',
     href: 'https://m.multicampus.com/course/crsDetail?corsCd=FA01KP',
   },
   {
@@ -41,7 +41,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '오프라인',
     year: 2026,
-    category: 'build',
+    category: 'tuning',
     href: 'https://m.multicampus.com/course/crsDetail?corsCd=FA01KQ',
   },
   {
@@ -49,7 +49,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '오프라인',
     year: 2026,
-    category: 'build',
+    category: 'tuning',
     href: 'https://m.multicampus.com/course/crsDetail?corsCd=FA01KR',
   },
   {
@@ -57,7 +57,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '오프라인',
     year: 2026,
-    category: 'build',
+    category: 'context',
     href: 'https://m.multicampus.com/course/crsDetail?corsCd=FA01KW',
   },
   {
@@ -65,7 +65,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '이러닝',
     year: 2025,
-    category: 'build',
+    category: 'context',
     href: 'https://www.multicampus.com/em/enrolment/courseDetai?p_menu=NzUjU1VC&p_gubun=Qw==&dxLanYn=N&corsCd=EA0DH1&corsYr=2020&corsDgrCd=10001',
   },
   {
@@ -73,7 +73,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '이러닝',
     year: 2025,
-    category: 'build',
+    category: 'tuning',
     href: 'https://www.multicampus.com/em/enrolment/courseDetai?p_menu=NzUjU1VC&p_gubun=Qw==&dxLanYn=N&corsCd=EA0DH2&corsYr=2020&corsDgrCd=10001',
   },
   {
@@ -81,7 +81,7 @@ export const LECTURES: Lecture[] = [
     provider: '멀티캠퍼스',
     format: '이러닝',
     year: 2025,
-    category: 'build',
+    category: 'tuning',
     href: 'https://www.multicampus.com/em/enrolment/courseDetai?p_menu=NzUjU1VC&p_gubun=Qw==&dxLanYn=N&corsCd=EA0DH3&corsYr=2020&corsDgrCd=10001',
   },
   {
@@ -89,7 +89,7 @@ export const LECTURES: Lecture[] = [
     provider: '패스트캠퍼스',
     format: '온라인',
     year: 2025,
-    category: 'build',
+    category: 'context',
     href: 'https://fastcampus.co.kr/data_online_langgraph',
     extra: { label: '실습 저장소', href: 'https://github.com/NotoriousH2/fastcampus_langgraph' },
   },

@@ -37,7 +37,7 @@ export const TALKS: Talk[] = [
     title: '하네스 · 루프 · 그래프 엔지니어링, 순서대로 이해하기',
     venue: 'SudoRemove',
     date: '2026.08',
-    category: 'build',
+    category: 'context',
     href: 'https://www.youtube.com/watch?v=lokHQ8_b5Rk',
     slides: {
       label: '발표자료',
@@ -99,7 +99,7 @@ export const TALKS: Talk[] = [
     title: 'LLM 개발과 파인 튜닝',
     venue: '패스트캠퍼스 × 경기도 판교 일할맛 세미나',
     date: '2025',
-    category: 'build',
+    category: 'tuning',
     href: 'https://fastcampus.co.kr/sem_mat_06',
   },
 ];

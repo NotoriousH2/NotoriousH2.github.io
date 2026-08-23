@@ -19,7 +19,7 @@ export const TOOLS: Tool[] = [
     name: 'LLM Token Counter',
     kind: '웹',
     summary: '텍스트나 파일(PDF·DOCX·TXT·MD)을 넣으면 GPT, Claude, Gemini, Hugging Face 모델별 토큰 수를 한 번에 센다.',
-    href: 'http://notolab.64bit.kr/tokenizer/',
+    href: 'https://notolab.64bit.kr/tokenizer/',
     repo: 'https://github.com/NotoriousH2/llm_token_counter',
   },
   {

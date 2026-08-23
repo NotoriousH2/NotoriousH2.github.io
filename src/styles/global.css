@@ -23,10 +23,10 @@
   --cat-l: 0.53;
   --cat-c: 0.135;
   --cat-models: oklch(var(--cat-l) var(--cat-c) 262);
-  --cat-build: oklch(var(--cat-l) var(--cat-c) 150);
+  --cat-tuning: oklch(var(--cat-l) var(--cat-c) 150);
+  --cat-context: oklch(var(--cat-l) var(--cat-c) 318);
+  --cat-ops: oklch(var(--cat-l) var(--cat-c) 205);
   --cat-industry: oklch(var(--cat-l) var(--cat-c) 42);
-  --cat-data: oklch(var(--cat-l) var(--cat-c) 318);
-  --cat-teaching: oklch(var(--cat-l) var(--cat-c) 205);
   --accent: var(--cat-models);
 
   /* 서체: 제목과 데이터는 IBM Plex, 본문은 Pretendard.

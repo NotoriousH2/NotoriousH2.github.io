@@ -1,7 +1,6 @@
 ---
 import { CONTACT, SITE } from '../consts';
 import { CORPORATE, LECTURES } from '../data/lectures';
-import { TALKS, TALKS_BY_DATE } from '../data/talks';
 import { CATEGORIES } from '../data/taxonomy';
 import { TOOLS } from '../data/tools';
 import Base from '../layouts/Base.astro';
@@ -10,13 +9,9 @@ import { categoryUsage, getPosts } from '../lib/posts';
 const posts = await getPosts();
 const byCategory = categoryUsage(posts);
 
-// '다루는 주제'는 이 페이지의 범례 역할도 한다. 글뿐 아니라 강의·발표에 쓰인 범주까지
-// 합쳐야, 아래 목록의 점 색이 무엇을 뜻하는지 같은 화면 안에서 설명된다.
-const usedIds = new Set([
-  ...byCategory.keys(),
-  ...LECTURES.map((l) => l.category),
-  ...TALKS.map((t) => t.category),
-]);
+// '다루는 주제'는 이 페이지의 범례 역할도 한다. 이 화면에 실제로 점이 찍히는 범주만
+// 담아야 한다. 발표는 /media로 옮겼으므로 여기서는 글과 강의만 센다.
+const usedIds = new Set([...byCategory.keys(), ...LECTURES.map((l) => l.category)]);
 const activeCategories = CATEGORIES.filter((c) => usedIds.has(c.id));
 
 // 강의는 '어디서 들을 수 있는가'로 묶는다. 범주는 항목마다 점으로 붙어 축을 공유한다.
@@ -190,40 +185,6 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
     )
   }
 
-  {
-    TALKS.length > 0 && (
-      <section class="block">
-        <div class="section-head">
-          <h2>출연과 공개 자료</h2>
-          <span class="meter meter--faint">{TALKS.length}건</span>
-        </div>
-        <dl class="specs">
-          {TALKS_BY_DATE.map((talk) => (
-            <div class="spec" style={`--tag-color: var(--cat-${talk.category})`}>
-              <dt class="meter dot">
-                {talk.date}
-                <span class="visually-hidden">, 범주 {categoryLabel(talk.category)}</span>
-              </dt>
-              <dd>
-                <span class="item__title">
-                  <a href={talk.href}>{talk.title}</a>
-                </span>
-                <span class="meter meter--faint">
-                  {talk.venue}
-                  {talk.slides && (
-                    <>
-                      <span class="sep" aria-hidden="true">/</span>
-                      <a href={talk.slides.href}>{talk.slides.label}</a>
-                    </>
-                  )}
-                </span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-    )
-  }
 </Base>
 
 <style>
@@ -255,74 +216,8 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
     margin-bottom: 0.4rem;
   }
 
-  .specs {
-    margin: 1rem 0 0;
-    border-top: 1px solid var(--line);
-  }
-
   .group .specs {
     margin-top: 0;
-  }
-
-  .spec {
-    display: grid;
-    grid-template-columns: 6rem 1fr;
-    gap: 0 1.25rem;
-    padding-block: 0.85rem;
-    border-bottom: 1px solid var(--line);
-    align-items: baseline;
-  }
-
-  dt {
-    color: var(--text);
-  }
-
-  dt a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .dot {
-    display: flex;
-    align-items: center;
-    gap: 0.45em;
-    color: var(--text-muted);
-  }
-
-  .dot::before {
-    content: '';
-    width: 0.46em;
-    height: 0.46em;
-    border-radius: 50%;
-    background: var(--tag-color);
-    flex: none;
-  }
-
-  dd {
-    margin: 0;
-    min-width: 0;
-    font-size: 0.95rem;
-    line-height: 1.7;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  dd a:hover {
-    color: var(--accent);
-  }
-
-  .item__title {
-    font-family: var(--font-heading);
-    font-weight: 500;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.6rem;
-  }
-
-  .item__title a {
-    text-decoration-color: var(--line-strong);
   }
 
   .repo {
@@ -343,10 +238,4 @@ const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label
     margin-inline: 0.45em;
   }
 
-  @media (max-width: 32rem) {
-    .spec {
-      grid-template-columns: 1fr;
-      gap: 0.3rem;
-    }
-  }
 </style>

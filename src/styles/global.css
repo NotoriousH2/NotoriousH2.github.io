@@ -255,6 +255,91 @@ main {
   gap: 0.35rem 0.9rem;
 }
 
+/* ── 스펙 목록: 왼쪽 계측기, 오른쪽 내용. 소개와 미디어가 함께 쓴다 ──── */
+
+.specs {
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--line);
+}
+
+/*
+  머리말이 이미 규칙선을 그었다면 목록이 바로 아래에 같은 선을 또 긋지 않는다.
+  (헤어라인 두 줄이 30px 간격으로 겹쳐 보이던 문제)
+*/
+.page-head + .specs,
+.section-head + .specs {
+  border-top: 0;
+  margin-top: 1rem;
+}
+
+.specs .spec {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 0 1.25rem;
+  padding-block: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+
+.specs dt {
+  color: var(--text);
+}
+
+.specs dt a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.specs .dot {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--text-muted);
+}
+
+.specs .dot::before {
+  content: '';
+  width: 0.46em;
+  height: 0.46em;
+  border-radius: 50%;
+  background: var(--tag-color);
+  flex: none;
+}
+
+.specs dd {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.specs dd a:hover {
+  color: var(--accent);
+}
+
+.specs .item__title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.specs .item__title a {
+  text-decoration-color: var(--line-strong);
+}
+
+@media (max-width: 32rem) {
+  .specs .spec {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+}
+
 /* ── 본문 조판 ─────────────────────────────────────────────────────── */
 
 .prose {

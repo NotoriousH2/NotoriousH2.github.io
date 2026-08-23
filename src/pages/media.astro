@@ -1,0 +1,133 @@
+---
+import { TALKS, TALKS_BY_DATE } from '../data/talks';
+import { CATEGORIES } from '../data/taxonomy';
+import Base from '../layouts/Base.astro';
+
+const categoryLabel = (id: string) => CATEGORIES.find((c) => c.id === id)?.label ?? id;
+
+// 코멘트가 하나도 없으면 그것을 예고하는 문장도 쓰지 않는다.
+const hasNotes = TALKS.some((talk) => talk.note);
+
+// 이 화면에 실제로 점이 찍히는 범주만 범례에 올린다.
+const usedCategories = CATEGORIES.filter((c) => TALKS.some((t) => t.category === c.id));
+---
+
+<Base
+  title="미디어"
+  description="유튜브 출연과 세미나 발표 자료 모음."
+>
+  <header class="page-head">
+    <p class="page-head__eyebrow">
+      <span class="meter meter--faint">{TALKS.length}건</span>
+    </p>
+    <h1>미디어</h1>
+    <p class="page-head__lede">
+      남이 여는 자리에 나가서 이야기한 것들. 영상이 있으면 영상으로, 없으면 발표 자료로
+      연결됩니다.{hasNotes && ' 지금 다시 보면 달라진 부분은 항목 아래에 따로 적어 두었습니다.'}
+    </p>
+    <ul class="legend">
+      {
+        usedCategories.map((category) => (
+          <li class="meter" style={`--tag-color: var(--cat-${category.id})`}>
+            <a href={`/categories/${category.id}`}>{category.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+
+  <dl class="specs">
+    {
+      TALKS_BY_DATE.map((talk) => (
+        <div class="spec" style={`--tag-color: var(--cat-${talk.category})`}>
+          <dt class="meter dot">
+            {talk.date}
+            <span class="visually-hidden">, 범주 {categoryLabel(talk.category)}</span>
+          </dt>
+          <dd>
+            <span class="item__title">
+              <a href={talk.href}>{talk.title}</a>
+            </span>
+            <span class="meter meter--faint">
+              {talk.venue}
+              {talk.slides && (
+                <>
+                  <span class="sep" aria-hidden="true">
+                    /
+                  </span>
+                  <a href={talk.slides.href}>{talk.slides.label}</a>
+                </>
+              )}
+            </span>
+            {talk.note && (
+              <p class="revisit">
+                <span class="meter revisit__asof">{talk.note.asOf} 기준</span>
+                <span class="revisit__text">{talk.note.text}</span>
+              </p>
+            )}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</Base>
+
+<style>
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+  }
+
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+  }
+
+  .legend li::before {
+    content: '';
+    width: 0.46em;
+    height: 0.46em;
+    border-radius: 50%;
+    background: var(--tag-color);
+  }
+
+  .legend a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .legend a:hover {
+    color: var(--text);
+  }
+
+  .sep {
+    color: var(--line-strong);
+    margin-inline: 0.45em;
+  }
+
+  /* 덧붙인 말. 원본 설명과 층을 가르기 위해 왼쪽 헤어라인으로만 구획한다. */
+  .revisit {
+    margin: 0.55rem 0 0.15rem;
+    padding-left: 0.8rem;
+    border-left: 1px solid var(--line-strong);
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    max-width: 32rem;
+  }
+
+  .revisit__asof {
+    color: var(--text-faint);
+  }
+
+  .revisit__text {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.75;
+  }
+</style>

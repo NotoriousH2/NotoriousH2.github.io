@@ -16,6 +16,13 @@ export interface Talk {
   href: string;
   /** 영상과 별개로 슬라이드가 있을 때만. */
   slides?: { label: string; href: string };
+  /**
+   * 지금 다시 보면 달라진 점. 발표 시점과 읽는 시점 사이의 간극을 메운다.
+   *
+   * asOf를 함께 적는 이유: 이 코멘트도 결국 낡는다. 언제 쓴 판단인지 남겨 두지 않으면
+   * 원본과 똑같은 문제가 반복된다.
+   */
+  note?: { asOf: string; text: string };
 }
 
 export const TALKS: Talk[] = [
